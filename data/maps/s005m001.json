@@ -1,0 +1,19 @@
+{
+  "id": "s005m00",
+  "slug": "plano-de-la-ciudad-de-monterrey",
+  "title": "Plano de la ciudad de Monterrey",
+  "year": 1901,
+  "yearApproximate": false,
+  "source": "Facebook - Monterrey Antiguo",
+  "sourceUrl": "https://www.facebook.com/groups/Monterrey.Antiguo/posts/25866043119665395/",
+  "centerPoint": [
+    25.677988,
+    -100.317021
+  ],
+  "imageWidth": 2048,
+  "imageHeight": 1821,
+  "metersPerPixel": 2.96,
+  "rotation": 13,
+  "defaultZoom": 15,
+  "imageFile": "s005m001.jpg"
+}
