@@ -1,0 +1,29 @@
+{
+  "id": "s001m079",
+  "slug": "plano-comercial-de-la-ciudad-de-monterrey",
+  "title": "Plano comercial de la ciudad de Monterrey",
+  "alternativeTitle": "Plano comercial de la ciudad de Monterrey",
+  "author": "Florentino Arroyo y Ramón Díaz",
+  "institutionalAuthor": "Tipografía y Litografía de Ramón Díaz",
+  "year": 1894,
+  "yearApproximate": false,
+  "century": "1894",
+  "scale": "1 metro por 5 000 metros",
+  "language": "Español",
+  "dimensions": "143 x 121 cm",
+  "series": "Nuevo León",
+  "file": "Nuevo León 2",
+  "classificationCode": "CGF.NL.M14.V2.0256",
+  "source": "Mapoteca Manuel Orozco y Berra",
+  "sourceUrl": "https://mapoteca-dgsiap.agricultura.gob.mx/",
+  "centerPoint": [
+    25.680515,
+    -100.316329
+  ],
+  "imageWidth": 5978,
+  "imageHeight": 6997,
+  "metersPerPixel": 1,
+  "rotation": 13,
+  "defaultZoom": 15,
+  "imageFile": "s001m079.jpg"
+}

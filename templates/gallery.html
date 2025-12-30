@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monterrey Viejo</title>
+    
+    <!-- Google Fonts - Overpass -->
+    <link href="https://fonts.googleapis.com/css?family=Overpass:400,700,900" rel="stylesheet">
+    
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+        
+        body {
+            font-family: 'Overpass', sans-serif;
+            background-color: #88afd5;
+            color: #000;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background-color: #fff;
+            border-bottom: 4px solid #000;
+            padding: 15px 0;
+        }
+        
+        .navbar-container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 24px;
+            color: #000;
+            text-decoration: none;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            margin-top: 30px;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            margin: 0;
+        }
+        
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        /* Map Cards */
+        .map-card {
+            border: 4px solid #000;
+            background-color: #afc2d6;
+            transition: none;
+            text-decoration: none;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+        
+        .map-card:hover {
+            /* No hover effect on card */
+        }
+        
+        .map-card:hover img {
+            transform: scale(1.6);
+        }
+        
+        .map-card-image-container {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border-bottom: 4px solid #000;
+            flex-shrink: 0;
+        }
+        
+        .map-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+            display: block;
+        }
+        
+        .map-card-body {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .map-card-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #000;
+            flex-grow: 1;
+        }
+        
+        .map-card-year {
+            font-weight: 400;
+            color: #000;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .navbar-brand {
+                font-size: 20px;
+            }
+            
+            .page-header p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <span class="navbar-brand">Monterrey Viejo</span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <p>{{MAPS_COUNT}}+ mapas históricos de Monterrey y Nuevo León, reunidos para facilitar su consulta.</p>
+        </div>
+
+        <!-- Maps Grid -->
+        <div class="grid">
+{{MAPS_CARDS}}
+        </div>
+    </div>
+</body>
+</html>

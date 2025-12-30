@@ -1,0 +1,19 @@
+{
+  "id": "s003m003",
+  "slug": "ciudad-de-monterrey-2002-mapa-de-bolsillo-guia-roji",
+  "title": "Ciudad de Monterrey 2002, mapa de Bolsillo / Guia Roji",
+  "year": 2002,
+  "yearApproximate": false,
+  "source": "University of Wisconsin-Milwaukee Libraries",
+  "sourceUrl": "https://collections.lib.uwm.edu/",
+  "centerPoint": [
+    25.718603,
+    -100.314072
+  ],
+  "imageWidth": 9996,
+  "imageHeight": 7839,
+  "metersPerPixel": 2.89,
+  "rotation": 0,
+  "defaultZoom": 15,
+  "imageFile": "s003m003.jpg"
+}

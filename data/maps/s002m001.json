@@ -1,0 +1,19 @@
+{
+  "id": "s002m001",
+  "slug": "compañía-de-agua-y-drenaje-de-monterrey-s-a-plano-de-los-cru",
+  "title": "Compañía de Agua y Drenaje de Monterrey, S. A. Plano de los cruceros del Ferrocarril Central Mexicano a la fundición N°2 y el ramal a Tampico con la cloaca desembocadora.",
+  "year": 1908,
+  "yearApproximate": true,
+  "source": "Memórica México",
+  "sourceUrl": "https://memoricamexico.gob.mx/",
+  "centerPoint": [
+    25.719044,
+    -100.286576
+  ],
+  "imageWidth": 2709,
+  "imageHeight": 4520,
+  "metersPerPixel": 5.48,
+  "rotation": 7,
+  "defaultZoom": 15,
+  "imageFile": "s002m001.jpg"
+}

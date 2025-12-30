@@ -1,0 +1,19 @@
+{
+  "id": "s003m001",
+  "slug": "plano-de-la-ciudad-de-monterrery-dibujado-especialmente-para",
+  "title": "Plano de la ciudad de Monterrery / dibujado especialmente para la Guia de monterrey, propiedad de Ediciones Monterrey",
+  "year": 1950,
+  "yearApproximate": false,
+  "source": "University of Wisconsin-Milwaukee Libraries",
+  "sourceUrl": "https://collections.lib.uwm.edu/",
+  "centerPoint": [
+    25.694383,
+    -100.32527
+  ],
+  "imageWidth": 8841,
+  "imageHeight": 8107,
+  "metersPerPixel": 2,
+  "rotation": 359,
+  "defaultZoom": 15,
+  "imageFile": "s003m001.jpg"
+}

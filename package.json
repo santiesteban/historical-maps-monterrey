@@ -1,0 +1,15 @@
+{
+  "name": "monterrey-viejo",
+  "version": "1.0.0",
+  "description": "Historical maps of Monterrey static site generator",
+  "scripts": {
+    "build": "node build/generate.js",
+    "dev": "node build/generate.js && python3 -m http.server 8000 --directory public"
+  },
+  "keywords": ["maps", "history", "monterrey"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "sharp": "^0.33.0"
+  }
+}

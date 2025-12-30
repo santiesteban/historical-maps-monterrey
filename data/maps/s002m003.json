@@ -1,0 +1,19 @@
+{
+  "id": "s002m003",
+  "slug": "general-plan-of-the-water-supply-and-drainage-works-for-the-",
+  "title": "General Plan of the Water Supply and Drainage Works for the City of Monterrey (propio), Plano general de las obras de abastecimiento de agua y drenaje de la ciudad de Monterrey (alternativo)",
+  "year": 1908,
+  "yearApproximate": false,
+  "source": "Memórica México",
+  "sourceUrl": "https://memoricamexico.gob.mx/",
+  "centerPoint": [
+    25.663611,
+    -100.352548
+  ],
+  "imageWidth": 4000,
+  "imageHeight": 5797,
+  "metersPerPixel": 7.2,
+  "rotation": 7,
+  "defaultZoom": 15,
+  "imageFile": "s002m003.jpg"
+}

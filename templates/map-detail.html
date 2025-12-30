@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} - {{YEAR_DISPLAY}}</title>
+    
+    <!-- Google Fonts - Overpass -->
+    <link href="https://fonts.googleapis.com/css?family=Overpass:400,700,900" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+        
+        body {
+            font-family: 'Overpass', sans-serif;
+            background-color: #88afd5;
+            color: #000;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background-color: #fff;
+            border-bottom: 4px solid #000;
+            padding: 15px 0;
+        }
+        
+        .navbar-container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 24px;
+            color: #000;
+            text-decoration: none;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Page Header */
+        .page-header {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        
+        .page-header h1 {
+            font-weight: 900;
+            font-size: 2.5rem;
+            color: #000;
+            margin: 0;
+        }
+        
+        .page-header .year {
+            font-weight: 900;
+            color: #fff;
+        }
+        
+        /* Card */
+        .card {
+            border: 4px solid #000;
+            background-color: #afc2d6;
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            background-color: #afc2d6;
+            border-bottom: 4px solid #000;
+            font-weight: 700;
+            padding: 15px;
+        }
+        
+        .card-body {
+            padding: 0;
+            background-color: #afc2d6;
+        }
+        
+        .card-body-padded {
+            padding: 15px;
+        }
+        
+        /* Map */
+        #map {
+            width: 100%;
+            height: 600px;
+        }
+        
+        /* Leaflet zoom controls */
+        .leaflet-touch .leaflet-bar {
+            border: 3px solid #000 !important;
+            background-color: #afc2d6 !important;
+        }
+        
+        /* Controls container */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-group label {
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        /* Table */
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+            color: #000;
+            background-color: #afc2d6;
+            border-collapse: collapse;
+        }
+        
+        .table td {
+            padding: 12px 15px;
+            border: none !important;
+            background-color: #afc2d6;
+        }
+        
+        .table td:first-child {
+            font-weight: 700;
+            width: 35%;
+        }
+        
+        .table a {
+            color: #0000ff;
+            text-decoration: underline;
+        }
+        
+        .table a:hover {
+            color: #0000cc;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            #map {
+                height: 400px;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .navbar-brand {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">Monterrey Viejo</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>{{TITLE}} <span class="year">{{YEAR_DISPLAY}}</span></h1>
+        </div>
+
+        <!-- Map Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="controls">
+                    <!-- Toggle Checkbox -->
+                    <div class="control-group">
+                        <input type="checkbox" id="toggle-historical" checked>
+                        <label for="toggle-historical">Mostrar Mapa Histórico</label>
+                    </div>
+
+                    <!-- Opacity Control -->
+                    <div class="control-group">
+                        <label for="opacity-slider">Opacidad:</label>
+                        <input type="range" id="opacity-slider" min="0" max="100" value="70" style="width: 150px; vertical-align: middle;">
+                        <span id="opacity-value" style="display: inline-block; min-width: 50px; font-weight: bold;">70%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <!-- Metadata Card -->
+        <div class="card">
+            <div class="card-header">
+                <strong>Metadatos</strong>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+{{METADATA_ROWS}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Map data
+        const mapData = {
+            title: "{{TITLE}}",
+            year: {{YEAR_NUMERIC}},
+            image: "{{IMAGE_FILE}}",
+            imageWidth: {{IMAGE_WIDTH}},
+            imageHeight: {{IMAGE_HEIGHT}},
+            scale: {{METERS_PER_PIXEL}},
+            rotation: {{ROTATION}},
+            centerPoint: [{{CENTER_LAT}}, {{CENTER_LNG}}],
+            defaultZoom: {{DEFAULT_ZOOM}}
+        };
+
+        // Calculate geographic bounds for the historical map overlay with rotation
+        function calculateBounds(mapData) {
+            const { centerPoint, imageWidth, imageHeight, scale } = mapData;
+            const [centerLat, centerLng] = centerPoint;
+            
+            const widthMeters = imageWidth * scale;
+            const heightMeters = imageHeight * scale;
+            
+            const metersPerDegreeLat = 111320;
+            const metersPerDegreeLng = 111320 * Math.cos(centerLat * Math.PI / 180);
+            
+            const latOffset = (heightMeters / 2) / metersPerDegreeLat;
+            const lngOffset = (widthMeters / 2) / metersPerDegreeLng;
+            
+            return [
+                [centerLat - latOffset, centerLng - lngOffset],
+                [centerLat + latOffset, centerLng + lngOffset]
+            ];
+        }
+
+        // Calculate rotated corners for image overlay
+        function calculateRotatedCorners(mapData) {
+            const { centerPoint, imageWidth, imageHeight, scale, rotation } = mapData;
+            const [centerLat, centerLng] = centerPoint;
+            
+            const widthMeters = imageWidth * scale;
+            const heightMeters = imageHeight * scale;
+            
+            const metersPerDegreeLat = 111320;
+            const metersPerDegreeLng = 111320 * Math.cos(centerLat * Math.PI / 180);
+            
+            const halfWidth = widthMeters / 2;
+            const halfHeight = heightMeters / 2;
+            
+            // Convert rotation to radians (negate to rotate in correct direction)
+            const rotRad = (-rotation * Math.PI) / 180;
+            const cosRot = Math.cos(rotRad);
+            const sinRot = Math.sin(rotRad);
+            
+            // Calculate the four corners (top-left, top-right, bottom-left, bottom-right)
+            // relative to center, then rotate, then convert to lat/lng
+            const corners = [
+                [-halfWidth, halfHeight],   // top-left
+                [halfWidth, halfHeight],    // top-right
+                [halfWidth, -halfHeight],   // bottom-right
+                [-halfWidth, -halfHeight]   // bottom-left
+            ];
+            
+            return corners.map(([x, y]) => {
+                // Apply rotation
+                const rotX = x * cosRot - y * sinRot;
+                const rotY = x * sinRot + y * cosRot;
+                
+                // Convert to lat/lng
+                const lat = centerLat + (rotY / metersPerDegreeLat);
+                const lng = centerLng + (rotX / metersPerDegreeLng);
+                
+                return [lat, lng];
+            });
+        }
+
+        // Initialize the map
+        const map = L.map('map', {
+            center: mapData.centerPoint,
+            zoom: mapData.defaultZoom,
+            zoomControl: true
+        });
+
+        // Add OpenStreetMap tile layer
+        const modernLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Add historical map overlay
+        let historicalLayer;
+        
+        if (mapData.rotation !== 0) {
+            // For rotated maps, use distortableImageOverlay with corner coordinates
+            const corners = calculateRotatedCorners(mapData);
+            
+            // Create a custom image overlay element
+            const HistoricalOverlay = L.Layer.extend({
+                initialize: function() {
+                    this._opacity = 1.0; // Start at 100% opacity
+                },
+                
+                onAdd: function(map) {
+                    this._image = L.DomUtil.create('img', 'leaflet-image-layer');
+                    this._image.src = mapData.image;
+                    this._image.style.position = 'absolute';
+                    
+                    // Add to overlay pane
+                    map.getPanes().overlayPane.appendChild(this._image);
+                    
+                    // Update position
+                    this._reset();
+                    
+                    // Listen to map events
+                    map.on('zoom', this._reset, this);
+                    map.on('move', this._reset, this);
+                },
+                
+                onRemove: function(map) {
+                    L.DomUtil.remove(this._image);
+                    map.off('zoom', this._reset, this);
+                    map.off('move', this._reset, this);
+                },
+                
+                _reset: function() {
+                    const map = this._map;
+                    const corners = calculateRotatedCorners(mapData);
+                    
+                    // Convert corners to pixel coordinates
+                    const topLeft = map.latLngToLayerPoint(corners[0]);
+                    const topRight = map.latLngToLayerPoint(corners[1]);
+                    const bottomRight = map.latLngToLayerPoint(corners[2]);
+                    
+                    // Calculate dimensions and rotation
+                    const width = Math.sqrt(
+                        Math.pow(topRight.x - topLeft.x, 2) + 
+                        Math.pow(topRight.y - topLeft.y, 2)
+                    );
+                    const height = Math.sqrt(
+                        Math.pow(bottomRight.x - topRight.x, 2) + 
+                        Math.pow(bottomRight.y - topRight.y, 2)
+                    );
+                    
+                    // Calculate angle
+                    const angle = Math.atan2(topRight.y - topLeft.y, topRight.x - topLeft.x);
+                    
+                    // Apply transform
+                    this._image.style.width = width + 'px';
+                    this._image.style.height = height + 'px';
+                    this._image.style.transformOrigin = '0 0';
+                    this._image.style.transform = 
+                        `translate(${topLeft.x}px, ${topLeft.y}px) rotate(${angle}rad)`;
+                    // Use stored opacity instead of hardcoded 0.7
+                    this._image.style.opacity = this._opacity;
+                },
+                
+                setOpacity: function(opacity) {
+                    this._opacity = opacity; // Store the opacity
+                    if (this._image) {
+                        this._image.style.opacity = opacity;
+                    }
+                    return this;
+                }
+            });
+            
+            historicalLayer = new HistoricalOverlay();
+            historicalLayer.addTo(map);
+            
+            // Fit bounds using the rotated corners
+            const bounds = L.latLngBounds(corners);
+            map.fitBounds(bounds);
+            
+        } else {
+            // For non-rotated maps, use standard imageOverlay
+            const bounds = calculateBounds(mapData);
+            historicalLayer = L.imageOverlay(mapData.image, bounds, {
+                opacity: 1.0, // Start at 100% opacity
+                interactive: false
+            }).addTo(map);
+            
+            map.fitBounds(bounds);
+        }
+
+        // Toggle checkbox
+        const toggleHistorical = document.getElementById('toggle-historical');
+        const opacitySlider = document.getElementById('opacity-slider');
+        const opacityValue = document.getElementById('opacity-value');
+        
+        // Set initial slider value to 100%
+        opacitySlider.value = 100;
+        opacityValue.textContent = '100%';
+
+        toggleHistorical.addEventListener('change', function(e) {
+            if (e.target.checked) {
+                map.addLayer(historicalLayer);
+                opacitySlider.disabled = false;
+            } else {
+                map.removeLayer(historicalLayer);
+                opacitySlider.disabled = true;
+            }
+        });
+
+        // Opacity slider
+        opacitySlider.addEventListener('input', function(e) {
+            const opacity = e.target.value / 100;
+            historicalLayer.setOpacity(opacity);
+            opacityValue.textContent = e.target.value + '%';
+        });
+
+        // Add scale control
+        L.control.scale({ imperial: false, metric: true }).addTo(map);
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "id": "s003m002",
+  "slug": "plano-de-la-ciudad-de-monterray-capital-del-estado-de-nuevo-",
+  "title": "Plano de la ciudad de Monterray, Capital del estado de Nuevo Leon, mostrando la zona inundada por la poderosa corriente de agua que produjo el gran desastre en los dias 27, 28 y 29 de Agosto ultimo, con expresion de las manzanas o cuadras arrastradas por la terrible avenida",
+  "year": 1909,
+  "yearApproximate": false,
+  "source": "University of Wisconsin-Milwaukee Libraries",
+  "sourceUrl": "https://collections.lib.uwm.edu/",
+  "centerPoint": [
+    25.677215,
+    -100.316622
+  ],
+  "imageWidth": 3639,
+  "imageHeight": 4210,
+  "metersPerPixel": 1.25,
+  "rotation": 13,
+  "defaultZoom": 15,
+  "imageFile": "s003m002.jpg"
+}

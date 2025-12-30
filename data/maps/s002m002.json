@@ -1,0 +1,19 @@
+{
+  "id": "s002m002",
+  "slug": "monterrey-nuevo-reyno-de-león-nuevo-león-atribuido",
+  "title": "Monterrey; Nuevo Reyno de León. Nuevo León (atribuido)",
+  "year": 1791,
+  "yearApproximate": false,
+  "source": "Memórica México",
+  "sourceUrl": "https://memoricamexico.gob.mx/",
+  "centerPoint": [
+    25.677462,
+    -100.320624
+  ],
+  "imageWidth": 7619,
+  "imageHeight": 4000,
+  "metersPerPixel": 0.7,
+  "rotation": 188,
+  "defaultZoom": 15,
+  "imageFile": "s002m002.jpg"
+}

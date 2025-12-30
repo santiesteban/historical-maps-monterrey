@@ -1,0 +1,3 @@
+The gallery template needs these replacements:
+1. Replace the grid section with {{MAPS_CARDS}}
+2. Replace "50+" with {{MAPS_COUNT}}

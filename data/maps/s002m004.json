@@ -1,0 +1,19 @@
+{
+  "id": "s002m004",
+  "slug": "solares-de-la-catedral-de-monterrey-atribuido",
+  "title": "Solares de la Catedral de Monterrey (atribuido)",
+  "year": 1798,
+  "yearApproximate": false,
+  "source": "Memórica México",
+  "sourceUrl": "https://memoricamexico.gob.mx/",
+  "centerPoint": [
+    25.670596,
+    -100.314029
+  ],
+  "imageWidth": 5933,
+  "imageHeight": 4000,
+  "metersPerPixel": 0.7,
+  "rotation": 7,
+  "defaultZoom": 15,
+  "imageFile": "s002m004.jpg"
+}
