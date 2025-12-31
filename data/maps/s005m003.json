@@ -1,0 +1,20 @@
+{
+  "id": "s005m003",
+  "slug": "plano-de-la-ciudad-de-monterrey-del-banco-de-mexico-1",
+  "title": "Plano de la ciudad de Monterrey del Banco de México, Hoja 1",
+  "year": 1962,
+  "yearApproximate": false,
+  "author": "Banco Nacional de México, S.A.",
+  "source": "Reddit - r/Monterrey",
+  "sourceUrl": "https://www.reddit.com/r/Monterrey/comments/n6wucy/ciudad_de_monterrey_y_sus_colonias_1962/",
+  "centerPoint": [
+    25.693537,
+    -100.330769
+  ],
+  "imageWidth": 4872,
+  "imageHeight": 3335,
+  "metersPerPixel": 5.6638,
+  "rotation": 0,
+  "defaultZoom": 15,
+  "imageFile": "s005m003.jpg"
+}
