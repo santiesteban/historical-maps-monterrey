@@ -1,0 +1,32 @@
+{
+  "id": "s001m069",
+  "title": "Plano comercial de Monterrey 1894 (Facísimil de 1995)",
+  "alternativeTitle": "Plano comercial de la ciudad de Monterrey. Hoja 1",
+  "author": "Florentino Arroyo y Ramón Díaz",
+  "institutionalAuthor": "Instituto Nacional de Estadística, Geografía e Informática",
+  "year": 1995,
+  "yearApproximate": false,
+  "originalYear": 1894,
+  "century": "1995",
+  "scale": "800 metros",
+  "language": "Español",
+  "dimensions": "110 x 78 cm",
+  "series": "Nuevo León",
+  "file": "Nuevo León 5",
+  "classificationCode": "CGF.NL.M14.V5.0530-1.2",
+  "collection": "Colección General de Fomento",
+  "source": "Mapoteca Manuel Orozco y Berra",
+  "sourceUrl": "https://mapoteca-dgsiap.agricultura.gob.mx/",
+  "sourceType": "mapoteca",
+  "notes": "This is a 1995 reproduction/catalog of the original 1894 map. The title references 1894 as the historical date of the map content.",
+  "centerPoint": [
+    25.695475,
+    -100.312503
+  ],
+  "imageWidth": 2589,
+  "imageHeight": 1426,
+  "metersPerPixel": 2.11,
+  "rotation": 12,
+  "defaultZoom": 15,
+  "imageFile": "s001m069.jpg"
+}

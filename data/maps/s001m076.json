@@ -1,0 +1,23 @@
+{
+  "id": "s001m076",
+  "slug": "plano-de-garza-garcia-nuevo-leon",
+  "title": "Plano de Garza García, Nuevo León",
+  "alternativeTitle": "Plano de Garza García de 1895",
+  "author": "D. Rodríguez, G. Zermeño y L. M. Saavedra",
+  "year": 1894,
+  "yearApproximate": false,
+  "century": "1895",
+  "classificationCode": "CCGF.NL.M14.V1.0152",
+  "source": "Mapoteca Manuel Orozco y Berra",
+  "sourceUrl": "https://mapoteca-dgsiap.agricultura.gob.mx/",
+  "centerPoint": [
+    25.663989,
+    -100.40336
+  ],
+  "imageWidth": 1440,
+  "imageHeight": 1228,
+  "metersPerPixel": 1.11,
+  "rotation": 19,
+  "defaultZoom": 15,
+  "imageFile": "s001m076.jpg"
+}
