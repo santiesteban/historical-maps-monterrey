@@ -14,10 +14,10 @@
   "description": "Se produce para localidades de 5 mil a 15 mil habitantes. Es un documento fotográfico que permite obtener, en forma rápida y relativamente a bajo costo, una imagen de la localidad y sus alrededores. Muestra las características físicas y los servicios y vías de comunicación, así como las corrientes de agua, la vegetación y los cultivos, las edificaciones, carreteras, caminos, vías férreas, aeropistas, canales, puentes, presas y bordos.",
   "source": "Instituto Nacional de Estadística y Geografía (INEGI)",
   "sourceUrl": "https://www.inegi.org.mx/",
-  "centerPoint": [25.686205, -100.375771],
+  "centerPoint": [25.685894, -100.374016],
   "imageWidth": 8689,
   "imageHeight": 9273,
-  "metersPerPixel": 2.23,
+  "metersPerPixel": 2.1321,
   "rotation": 0,
   "defaultZoom": 15,
   "imageFile": "s006m001.jpg"
