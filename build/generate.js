@@ -47,39 +47,73 @@ function loadTemplate(name) {
 // Generate thumbnails for all maps
 async function generateThumbnails(maps) {
     if (!sharp) {
-        console.log('\n⚠ Skipping thumbnail generation (sharp not installed)');
-        console.log('  Thumbnails will be generated automatically on GitHub deployment\n');
+        console.log('\n⚠ Sharp not installed - thumbnails will not be generated locally');
+        console.log('  (GitHub Actions will generate them automatically on deployment)');
+        console.log('  To generate thumbnails locally, install sharp: npm install sharp\n');
         return;
     }
     
-    console.log('\nGenerating thumbnails...\n');
+    console.log('\nGenerating 800x800 thumbnails...\n');
+    
+    // Ensure thumbnails directory exists
+    if (!fs.existsSync(THUMBNAILS_DIR)) {
+        fs.mkdirSync(THUMBNAILS_DIR, { recursive: true });
+        console.log(`Created thumbnails directory: ${THUMBNAILS_DIR}\n`);
+    }
+    
+    let successCount = 0;
+    let errorCount = 0;
     
     for (const map of maps) {
         const sourceImage = path.join(IMAGES_DIR, map.imageFile);
         const thumbnailFilename = map.imageFile.replace('.jpg', '-thumb.jpg');
         const thumbnailPath = path.join(THUMBNAILS_DIR, thumbnailFilename);
         
+        // Check if source image exists
+        if (!fs.existsSync(sourceImage)) {
+            console.error(`✗ Source image not found: ${sourceImage}`);
+            errorCount++;
+            continue;
+        }
+        
         try {
+            // Force regeneration by removing old thumbnail if exists
+            if (fs.existsSync(thumbnailPath)) {
+                fs.unlinkSync(thumbnailPath);
+                console.log(`  Removed old thumbnail: ${thumbnailFilename}`);
+            }
+            
             await sharp(sourceImage)
-                .resize(400, 400, {
+                .resize(800, 800, {
                     fit: 'cover',
                     position: 'center'
                 })
-                .jpeg({ quality: 85 })
+                .jpeg({ quality: 90 })
                 .toFile(thumbnailPath);
             
-            console.log(`✓ Generated thumbnail for ${map.imageFile}`);
+            // Verify the thumbnail was created
+            if (fs.existsSync(thumbnailPath)) {
+                const stats = fs.statSync(thumbnailPath);
+                console.log(`✓ Generated ${thumbnailFilename} (${Math.round(stats.size / 1024)}KB)`);
+                successCount++;
+            } else {
+                console.error(`✗ Failed to create thumbnail: ${thumbnailFilename}`);
+                errorCount++;
+            }
         } catch (error) {
-            console.error(`✗ Failed to generate thumbnail for ${map.imageFile}:`, error.message);
+            console.error(`✗ Error generating thumbnail for ${map.imageFile}:`, error.message);
+            errorCount++;
         }
     }
+    
+    console.log(`\nThumbnail generation complete: ${successCount} successful, ${errorCount} errors`);
 }
 
 // Generate gallery page
 function generateGallery(maps) {
     const template = loadTemplate('gallery.html');
     
-    // Generate map cards HTML
+    // Generate map cards HTML - Updated for Figma design
     const cardsHTML = maps.map(map => {
         // Format year display with "c." prefix if approximate
         const displayYear = map.yearApproximate 
@@ -92,14 +126,13 @@ function generateGallery(maps) {
         // Use thumbnail for gallery
         const thumbnailFile = map.imageFile.replace('.jpg', '-thumb.jpg');
         
-        return `
-            <a href="${filename}" class="map-card">
-                <div class="map-card-image-container">
-                    <img src="images/thumbnails/${thumbnailFile}" alt="${map.title || 'Mapa'}">
+        return `            <a href="${filename}" class="map-card">
+                <div class="map-card-image">
+                    <img src="images/thumbnails/${thumbnailFile}" alt="${map.title || 'Mapa'}" loading="lazy">
                 </div>
-                <div class="map-card-body">
-                    <div class="map-card-title">${map.title || 'Sin título'}</div>
-                    <div class="map-card-year">${displayYear}</div>
+                <div>
+                    <h3>${map.title || 'Sin título'}</h3>
+                    <p class="map-card-year">${displayYear}</p>
                 </div>
             </a>`;
     }).join('\n');
@@ -127,6 +160,7 @@ function generateMapDetails(maps) {
         
         const html = template
             .replace(/{{TITLE}}/g, map.title || 'Sin título')
+            .replace(/{{DESCRIPTION}}/g, map.alternativeTitle || map.title || '')
             .replace(/{{YEAR_DISPLAY}}/g, displayYear)
             .replace(/{{YEAR_NUMERIC}}/g, numericYear)
             .replace(/{{AUTHOR}}/g, map.author || 'Autor desconocido')
@@ -172,31 +206,45 @@ function generateMetadataRows(map) {
         rows.push(['Fuente', map.source]);
     }
     
+    // Scale
+    if (map.scale) {
+        rows.push(['Escala', map.scale]);
+    }
+    
+    // Language
+    if (map.language) {
+        rows.push(['Idioma', map.language]);
+    }
+    
+    // Dimensions
+    if (map.dimensions) {
+        rows.push(['Dimensiones', map.dimensions]);
+    }
+    
     // Center point
     if (map.centerPoint && map.centerPoint.length === 2) {
-        rows.push(['Punto Central', `[${map.centerPoint[0]}, ${map.centerPoint[1]}]`]);
+        rows.push(['Punto Central', `[${map.centerPoint[0].toFixed(6)}, ${map.centerPoint[1].toFixed(6)}]`]);
     }
     
     // Image dimensions
     if (map.imageWidth && map.imageHeight) {
-        rows.push(['Tamaño de Imagen', `${map.imageWidth} × ${map.imageHeight} pixeles`]);
+        rows.push(['Tamaño de Imagen', `${map.imageWidth} × ${map.imageHeight} píxeles`]);
     }
     
-    // Scale
+    // Scale (meters per pixel)
     if (map.metersPerPixel) {
-        rows.push(['Escala (metros por pixel)', map.metersPerPixel]);
+        rows.push(['Escala Digital', `${map.metersPerPixel} metros/píxel`]);
     }
     
     // Rotation
     if (map.rotation !== undefined) {
-        rows.push(['Rotación', `${map.rotation}° ${map.rotation === 0 ? '(norte arriba)' : ''}`]);
+        rows.push(['Rotación', `${map.rotation}°${map.rotation === 0 ? ' (norte arriba)' : ''}`]);
     }
     
-    return rows.map(([label, value]) => `
-                        <tr>
-                            <td>${label}</td>
-                            <td>${value}</td>
-                        </tr>`).join('\n');
+    return rows.map(([label, value]) => `                            <tr>
+                                <td>${label}</td>
+                                <td>${value}</td>
+                            </tr>`).join('\n');
 }
 
 // Copy images to public directory
@@ -228,12 +276,12 @@ function copyImages() {
 
 // Main build function
 async function build() {
-    console.log('Building Monterrey Viejo site...\n');
+    console.log('Building Monterrey Viejo site with Figma design...\n');
     
     const maps = loadMapData();
     console.log(`Loaded ${maps.length} maps\n`);
     
-    // Generate thumbnails first
+    // Generate thumbnails first (800x800 @ 90% quality)
     await generateThumbnails(maps);
     
     console.log('\nGenerating pages...\n');
@@ -241,8 +289,11 @@ async function build() {
     generateMapDetails(maps);
     copyImages();
     
-    console.log('\n✓ Build complete!');
+    console.log('\n✅ Build complete!');
     console.log(`\nGenerated files in: ${PUBLIC_DIR}`);
+    console.log('\nNote: If thumbnails weren\'t generated (sharp not installed),');
+    console.log('they will be created automatically when deployed to GitHub Pages.');
+    console.log('To generate thumbnails locally: npm install sharp');
 }
 
 // Run build
