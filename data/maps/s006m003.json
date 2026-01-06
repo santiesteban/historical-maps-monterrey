@@ -1,6 +1,6 @@
 {
   "id": "s006m003",
-  "title": "Carta topográfica G14C26 Monterrey escala 1:50 000 serie I",
+  "title": "Carta topográfica INEGI de 1975, hoja G14C26",
   "theme": "Topografía",
   "collection": "Cartas topográficas escala 1:50 000, serie I",
   "state": "Nuevo León",
@@ -15,7 +15,7 @@
   "coordinates": "O 100°00 - O 100°20 / N 25°30 - N 25°45",
   "datum": "Norteamericano de 1927",
   "photography": "Color",
-  "description": "La carta imagen digital consiste en una imagen que tiene el mismo contenido que la carta topográfica escala 1:50 000 impresa. Además del cuerpo del mapa, se incluye la leyenda marginal para facilitar su interpretación. La edición de la carta y esta imagen se prepararon mediante procesos digitales a partir de datos vectoriales. Se incluyeron archivos de imagen en formatos tif y gif, se agregan datos de georeferencia, con la que esta imagen puede combinarse con otra información geográfica, utilizando herramientas adecuadas.",
+  "description": "Carta topográfica que muestra la zona oriente del área metropolitana de Monterrey, incluyendo Monterrey, Guadalupe, Juárez y Cadereyta. Incluye signos convencionales para interpretación del terreno, características físicas y servicios de comunicación.",
   "source": "Instituto Nacional de Estadística y Geografía (INEGI)",
   "sourceUrl": "https://www.inegi.org.mx/",
   "centerPoint": [25.626629, -100.14179],

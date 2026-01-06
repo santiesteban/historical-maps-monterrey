@@ -1,7 +1,8 @@
 {
   "id": "s002m002",
   "slug": "monterrey-nuevo-reyno-de-león-nuevo-león-atribuido",
-  "title": "Monterrey; Nuevo Reyno de León. Nuevo León (atribuido)",
+  "title": "Mapa de la situación de la Ciudad de Monterrey del Nuevo Reyno de León de 1791",
+  "description": "Mapa de autor anónimo creado como parte del expediente de \"Elección del lugar en que se debe fijar la capital del obispado del Nuevo Reino de León\"",
   "year": 1791,
   "yearApproximate": false,
   "source": "Memórica México",
@@ -17,3 +18,5 @@
   "defaultZoom": 15,
   "imageFile": "s002m002.jpg"
 }
+
+
