@@ -158,9 +158,13 @@ function generateMapDetails(maps) {
         // Numeric year for JavaScript (always a number or null)
         const numericYear = map.year || 'null';
         
+        // Description: uses 'description' field if available, 
+        // falls back to 'alternativeTitle', or empty string
+        const description = map.description || map.alternativeTitle || '';
+        
         const html = template
             .replace(/{{TITLE}}/g, map.title || 'Sin título')
-            .replace(/{{DESCRIPTION}}/g, map.alternativeTitle || map.title || '')
+            .replace(/{{DESCRIPTION}}/g, description)
             .replace(/{{YEAR_DISPLAY}}/g, displayYear)
             .replace(/{{YEAR_NUMERIC}}/g, numericYear)
             .replace(/{{AUTHOR}}/g, map.author || 'Autor desconocido')
