@@ -225,6 +225,7 @@ async function generateMultiResolutionImages(maps) {
                     .sharpen()  // Add sharpening for better clarity
                     .webp({ 
                         quality: 98,
+                        effort: 4,  // Reduced from 6 for faster encoding (still high quality)
                         nearLossless: true,  // Near-lossless mode for maximum quality
                         smartSubsample: false  // Disable for better quality
                     })
