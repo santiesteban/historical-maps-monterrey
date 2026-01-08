@@ -126,7 +126,7 @@ async function generateThumbnails(maps) {
                     kernel: 'lanczos3'  // Sharpest resize algorithm
                 })
                 .jpeg({ 
-                    quality: 98,
+                    quality: 92,  // Reduced from 98 for better compression
                     mozjpeg: true
                 })
                 .toFile(thumbnailPath);
@@ -224,10 +224,8 @@ async function generateMultiResolutionImages(maps) {
                     })
                     .sharpen()  // Add sharpening for better clarity
                     .webp({ 
-                        quality: 98,
-                        effort: 4,  // Reduced from 6 for faster encoding (still high quality)
-                        nearLossless: true,  // Near-lossless mode for maximum quality
-                        smartSubsample: false  // Disable for better quality
+                        quality: 92,  // Reduced from 98 for better compression
+                        effort: 4  // Balanced speed/compression
                     })
                     .toFile(webpPath);
                 
@@ -255,7 +253,7 @@ async function generateMultiResolutionImages(maps) {
                 } else {
                     await sharpInstance
                         .jpeg({ 
-                            quality: 98,
+                            quality: 92,  // Reduced from 98 - better compression, still excellent quality
                             progressive: true,
                             mozjpeg: true,
                             chromaSubsampling: '4:4:4'  // Best quality chroma
