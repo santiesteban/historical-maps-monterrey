@@ -1,0 +1,18 @@
+{
+  "id": "s005m009",
+  "slug": "plano-oficial-1947",
+  "title": "Plano Oficial de la Ciudad de Monterrey, N.L. y Municipios Adyacentes de la Comisión de Planificación del Estado 1947",
+  "year": 1933,
+  "yearApproximate": false,
+  "author": "Comisión de Planificación del Estado",
+  "centerPoint": [
+    25.68151,
+    -100.309355
+  ],
+  "imageWidth": 4058,
+  "imageHeight": 2938,
+  "metersPerPixel": 4.93,
+  "rotation": 0,
+  "defaultZoom": 15,
+  "imageFile": "s005m009.png"
+}
