@@ -1,0 +1,18 @@
+{
+  "id": "s005m004",
+  "slug": "plano-oficial-1933",
+  "title": "Plano Oficial de la Ciudad de Monterrey, Levantado por la Dirección Municipal de Obras Públicas de 1933",
+  "year": 1933,
+  "yearApproximate": false,
+  "author": "Dirección Municipal de Obras Públicas",
+  "centerPoint": [
+    25.678942,
+    -100.32745
+  ],
+  "imageWidth": 3225,
+  "imageHeight": 2943,
+  "metersPerPixel": 3.86,
+  "rotation": 0,
+  "defaultZoom": 15,
+  "imageFile": "s005m008.jpg"
+}
