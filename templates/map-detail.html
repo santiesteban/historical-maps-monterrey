@@ -359,6 +359,58 @@
             defaultZoom: {{DEFAULT_ZOOM}}
         };
 
+        // Detect WebP support
+        function supportsWebP() {
+            const elem = document.createElement('canvas');
+            if (elem.getContext && elem.getContext('2d')) {
+                return elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+            }
+            return false;
+        }
+
+        const hasWebPSupport = supportsWebP();
+
+        // Get appropriate image path based on zoom level
+        function getImagePathForZoom(baseImage, currentZoom) {
+            const zoom = Math.round(currentZoom);
+            let suffix = '';
+            
+            // Determine which resolution to load based on zoom
+            // Updated for higher resolutions: 25%, 50%, 75%, 100%
+            if (zoom <= 12) {
+                suffix = '-small';   // 25% resolution
+            } else if (zoom <= 14) {
+                suffix = '-medium';  // 50% resolution
+            } else if (zoom <= 15) {
+                suffix = '-large';   // 75% resolution
+            }
+            // else: use original (100% - no suffix)
+            
+            // Extract base name and extension
+            const extMatch = baseImage.match(/\.(jpg|jpeg|png)$/i);
+            if (!extMatch) return 'images/' + baseImage;
+            
+            const ext = extMatch[0];
+            const baseName = baseImage.replace(/\.(jpg|jpeg|png)$/i, '');
+            
+            // Use WebP if supported, otherwise use original format
+            if (hasWebPSupport) {
+                return `images/${baseName}${suffix}.webp`;
+            } else {
+                return `images/${baseName}${suffix}${ext}`;
+            }
+        }
+
+        // Preload next resolution level
+        function preloadNextResolution(currentZoom) {
+            const nextZoom = Math.ceil(currentZoom) + 1;
+            if (nextZoom <= 16) {
+                const nextImage = getImagePathForZoom(mapData.image, nextZoom);
+                const img = new Image();
+                img.src = nextImage;
+            }
+        }
+
         // Calculate geographic bounds for the historical map overlay with rotation
         function calculateBounds(mapData) {
             const { centerPoint, imageWidth, imageHeight, scale } = mapData;
@@ -435,20 +487,27 @@
 
         // Add historical map overlay
         let historicalLayer;
+        let currentImageSrc = null;
         
         if (mapData.rotation !== 0) {
             // For rotated maps, use distortableImageOverlay with corner coordinates
             const corners = calculateRotatedCorners(mapData);
             
-            // Create a custom image overlay element
+            // Create a custom image overlay element with dynamic loading
             const HistoricalOverlay = L.Layer.extend({
                 initialize: function() {
-                    this._opacity = 1.0; // Start at 100% opacity
+                    this._opacity = 1.0;
+                    this._currentZoom = map.getZoom();
                 },
                 
                 onAdd: function(map) {
                     this._image = L.DomUtil.create('img', 'leaflet-image-layer');
-                    this._image.src = mapData.image;
+                    
+                    // Set initial image source based on zoom
+                    const initialSrc = getImagePathForZoom(mapData.image, map.getZoom());
+                    this._image.src = initialSrc;
+                    currentImageSrc = initialSrc;
+                    
                     this._image.style.position = 'absolute';
                     
                     // Add to overlay pane
@@ -460,12 +519,28 @@
                     // Listen to map events
                     map.on('zoom', this._reset, this);
                     map.on('move', this._reset, this);
+                    map.on('zoomend', this._onZoomEnd, this);
                 },
                 
                 onRemove: function(map) {
                     L.DomUtil.remove(this._image);
                     map.off('zoom', this._reset, this);
                     map.off('move', this._reset, this);
+                    map.off('zoomend', this._onZoomEnd, this);
+                },
+                
+                _onZoomEnd: function() {
+                    const newZoom = map.getZoom();
+                    const newSrc = getImagePathForZoom(mapData.image, newZoom);
+                    
+                    // Only update if image source should change
+                    if (newSrc !== currentImageSrc) {
+                        this._image.src = newSrc;
+                        currentImageSrc = newSrc;
+                        
+                        // Preload next resolution
+                        preloadNextResolution(newZoom);
+                    }
                 },
                 
                 _reset: function() {
@@ -496,12 +571,11 @@
                     this._image.style.transformOrigin = '0 0';
                     this._image.style.transform = 
                         `translate(${topLeft.x}px, ${topLeft.y}px) rotate(${angle}rad)`;
-                    // Use stored opacity
                     this._image.style.opacity = this._opacity;
                 },
                 
                 setOpacity: function(opacity) {
-                    this._opacity = opacity; // Store the opacity
+                    this._opacity = opacity;
                     if (this._image) {
                         this._image.style.opacity = opacity;
                     }
@@ -517,15 +591,36 @@
             map.fitBounds(bounds);
             
         } else {
-            // For non-rotated maps, use standard imageOverlay
+            // For non-rotated maps, use standard imageOverlay with dynamic loading
             const bounds = calculateBounds(mapData);
-            historicalLayer = L.imageOverlay(mapData.image, bounds, {
-                opacity: 1.0, // Start at 100% opacity
+            const initialSrc = getImagePathForZoom(mapData.image, map.getZoom());
+            currentImageSrc = initialSrc;
+            
+            historicalLayer = L.imageOverlay(initialSrc, bounds, {
+                opacity: 1.0,
                 interactive: false
             }).addTo(map);
             
+            // Update image on zoom
+            map.on('zoomend', function() {
+                const newZoom = map.getZoom();
+                const newSrc = getImagePathForZoom(mapData.image, newZoom);
+                
+                if (newSrc !== currentImageSrc) {
+                    // Update the image URL
+                    historicalLayer.setUrl(newSrc);
+                    currentImageSrc = newSrc;
+                    
+                    // Preload next resolution
+                    preloadNextResolution(newZoom);
+                }
+            });
+            
             map.fitBounds(bounds);
         }
+        
+        // Preload the next resolution on initial load
+        preloadNextResolution(map.getZoom());
 
         // Toggle checkbox
         const toggleHistorical = document.getElementById('toggle-historical');

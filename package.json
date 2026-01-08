@@ -1,20 +1,25 @@
 {
   "name": "monterrey-viejo",
-  "version": "1.0.0",
-  "description": "Historical maps of Monterrey static site generator",
+  "version": "2.0.0",
+  "description": "Historical maps of Monterrey with multi-resolution support and incremental builds",
   "scripts": {
     "build": "node build/generate.js",
+    "build:force": "node build/generate.js --force",
+    "build:images": "node build/generate.js --images-only",
+    "build:html": "node build/generate.js --skip-images",
     "dev": "node build/generate.js && python3 -m http.server 8000 --directory public"
   },
   "keywords": [
     "maps",
     "history",
-    "monterrey"
+    "monterrey",
+    "cartography",
+    "webp",
+    "incremental-builds"
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "sharp": "^0.33.5"
   }
 }

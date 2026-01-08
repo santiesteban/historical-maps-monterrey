@@ -8,9 +8,15 @@ let sharp;
 try {
     sharp = require('sharp');
 } catch (e) {
-    console.log('⚠ Sharp not installed - thumbnails will not be generated locally');
-    console.log('  (GitHub Actions will generate them automatically on deployment)');
+    console.log('⚠ Sharp not installed - images will not be processed locally');
+    console.log('  (GitHub Actions will process them automatically on deployment)');
 }
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+const FORCE_REGENERATE = args.includes('--force') || args.includes('-f');
+const SKIP_IMAGES = args.includes('--skip-images');
+const IMAGES_ONLY = args.includes('--images-only');
 
 // Paths
 const ROOT_DIR = path.join(__dirname, '..');
@@ -44,6 +50,35 @@ function loadTemplate(name) {
     return fs.readFileSync(path.join(TEMPLATES_DIR, name), 'utf8');
 }
 
+// Check if image needs regeneration
+function needsRegeneration(sourceImage, targetFiles) {
+    // Force flag overrides all checks
+    if (FORCE_REGENERATE) {
+        return true;
+    }
+    
+    // Check if source exists
+    if (!fs.existsSync(sourceImage)) {
+        return false; // Can't regenerate if source missing
+    }
+    
+    const sourceStats = fs.statSync(sourceImage);
+    
+    // Check if all target files exist and are newer than source
+    for (const targetFile of targetFiles) {
+        if (!fs.existsSync(targetFile)) {
+            return true; // Missing file, need to generate
+        }
+        
+        const targetStats = fs.statSync(targetFile);
+        if (targetStats.mtime < sourceStats.mtime) {
+            return true; // Target older than source, need to regenerate
+        }
+    }
+    
+    return false; // All files exist and are up to date
+}
+
 // Generate thumbnails for all maps
 async function generateThumbnails(maps) {
     if (!sharp) {
@@ -53,20 +88,20 @@ async function generateThumbnails(maps) {
         return;
     }
     
-    console.log('\nGenerating 800x800 thumbnails...\n');
+    console.log('\n📸 Generating 800x800 thumbnails...\n');
     
     // Ensure thumbnails directory exists
     if (!fs.existsSync(THUMBNAILS_DIR)) {
         fs.mkdirSync(THUMBNAILS_DIR, { recursive: true });
-        console.log(`Created thumbnails directory: ${THUMBNAILS_DIR}\n`);
     }
     
     let successCount = 0;
     let errorCount = 0;
+    let skippedCount = 0;
     
     for (const map of maps) {
         const sourceImage = path.join(IMAGES_DIR, map.imageFile);
-        const thumbnailFilename = map.imageFile.replace('.jpg', '-thumb.jpg');
+        const thumbnailFilename = map.imageFile.replace(/\.(jpg|jpeg|png)$/i, '-thumb.jpg');
         const thumbnailPath = path.join(THUMBNAILS_DIR, thumbnailFilename);
         
         // Check if source image exists
@@ -76,19 +111,24 @@ async function generateThumbnails(maps) {
             continue;
         }
         
+        // Check if regeneration needed
+        if (!needsRegeneration(sourceImage, [thumbnailPath])) {
+            console.log(`⏭️  Skipped ${thumbnailFilename} (up to date)`);
+            skippedCount++;
+            continue;
+        }
+        
         try {
-            // Force regeneration by removing old thumbnail if exists
-            if (fs.existsSync(thumbnailPath)) {
-                fs.unlinkSync(thumbnailPath);
-                console.log(`  Removed old thumbnail: ${thumbnailFilename}`);
-            }
-            
             await sharp(sourceImage)
                 .resize(800, 800, {
                     fit: 'cover',
-                    position: 'center'
+                    position: 'center',
+                    kernel: 'lanczos3'  // Sharpest resize algorithm
                 })
-                .jpeg({ quality: 90 })
+                .jpeg({ 
+                    quality: 98,
+                    mozjpeg: true
+                })
                 .toFile(thumbnailPath);
             
             // Verify the thumbnail was created
@@ -106,14 +146,142 @@ async function generateThumbnails(maps) {
         }
     }
     
-    console.log(`\nThumbnail generation complete: ${successCount} successful, ${errorCount} errors`);
+    console.log(`\n📸 Thumbnail generation complete: ${successCount} generated, ${skippedCount} skipped, ${errorCount} errors`);
+}
+
+// Generate multi-resolution images with WebP support
+async function generateMultiResolutionImages(maps) {
+    if (!sharp) {
+        console.log('\n⚠ Sharp not installed - multi-resolution images will not be generated locally');
+        console.log('  (GitHub Actions will generate them automatically on deployment)\n');
+        return;
+    }
+    
+    if (FORCE_REGENERATE) {
+        console.log('\n🔄 Force regeneration enabled - rebuilding ALL images\n');
+    }
+    
+    console.log('\n🖼️  Generating multi-resolution images (WebP + fallback)...\n');
+    
+    const publicImagesDir = path.join(PUBLIC_DIR, 'images');
+    if (!fs.existsSync(publicImagesDir)) {
+        fs.mkdirSync(publicImagesDir, { recursive: true });
+    }
+    
+    const sizes = [
+        { suffix: '-small', scale: 0.25, description: '25%' },      // was 12.5%
+        { suffix: '-medium', scale: 0.50, description: '50%' },     // was 25%
+        { suffix: '-large', scale: 0.75, description: '75%' },      // was 50%
+        { suffix: '', scale: 1.0, description: '100% (optimized)' }
+    ];
+    
+    let totalSuccess = 0;
+    let totalError = 0;
+    let totalSkipped = 0;
+    
+    for (const map of maps) {
+        const sourceImage = path.join(IMAGES_DIR, map.imageFile);
+        
+        // Check if source image exists
+        if (!fs.existsSync(sourceImage)) {
+            console.error(`✗ Source image not found: ${sourceImage}`);
+            totalError++;
+            continue;
+        }
+        
+        const isPNG = map.imageFile.toLowerCase().endsWith('.png');
+        const ext = isPNG ? '.png' : '.jpg';
+        const baseName = map.imageFile.replace(/\.(jpg|jpeg|png)$/i, '');
+        
+        // Determine all target files for this map
+        const allTargetFiles = [];
+        for (const size of sizes) {
+            allTargetFiles.push(path.join(publicImagesDir, `${baseName}${size.suffix}.webp`));
+            allTargetFiles.push(path.join(publicImagesDir, `${baseName}${size.suffix}${ext}`));
+        }
+        
+        // Check if regeneration needed for this map
+        if (!needsRegeneration(sourceImage, allTargetFiles)) {
+            console.log(`⏭️  Skipped ${map.imageFile} (all variants up to date)`);
+            totalSkipped += allTargetFiles.length;
+            continue;
+        }
+        
+        console.log(`\n🔨 Processing ${map.imageFile} (${map.imageWidth}×${map.imageHeight})...`);
+        
+        for (const size of sizes) {
+            const outputWidth = Math.round(map.imageWidth * size.scale);
+            const outputHeight = Math.round(map.imageHeight * size.scale);
+            
+            try {
+                // Generate WebP version (best compression for all browsers)
+                const webpPath = path.join(publicImagesDir, `${baseName}${size.suffix}.webp`);
+                await sharp(sourceImage)
+                    .resize(outputWidth, outputHeight, {
+                        fit: 'inside',
+                        withoutEnlargement: true,
+                        kernel: 'lanczos3'  // Sharpest resize algorithm
+                    })
+                    .sharpen()  // Add sharpening for better clarity
+                    .webp({ 
+                        quality: 98,
+                        nearLossless: true,  // Near-lossless mode for maximum quality
+                        smartSubsample: false  // Disable for better quality
+                    })
+                    .toFile(webpPath);
+                
+                const webpStats = fs.statSync(webpPath);
+                console.log(`  ✓ WebP ${size.description}: ${outputWidth}×${outputHeight} (${Math.round(webpStats.size / 1024)}KB)`);
+                
+                // Generate fallback in original format
+                const fallbackPath = path.join(publicImagesDir, `${baseName}${size.suffix}${ext}`);
+                const sharpInstance = sharp(sourceImage)
+                    .resize(outputWidth, outputHeight, {
+                        fit: 'inside',
+                        withoutEnlargement: true,
+                        kernel: 'lanczos3'  // Sharpest resize algorithm
+                    })
+                    .sharpen();  // Add sharpening for better clarity
+                
+                if (isPNG) {
+                    await sharpInstance
+                        .png({ 
+                            compressionLevel: 9,  // Maximum compression
+                            adaptiveFiltering: true,  // Better for photos
+                            palette: false  // Keep full color depth for quality
+                        })
+                        .toFile(fallbackPath);
+                } else {
+                    await sharpInstance
+                        .jpeg({ 
+                            quality: 98,
+                            progressive: true,
+                            mozjpeg: true,
+                            chromaSubsampling: '4:4:4'  // Best quality chroma
+                        })
+                        .toFile(fallbackPath);
+                }
+                
+                const fallbackStats = fs.statSync(fallbackPath);
+                console.log(`  ✓ ${isPNG ? 'PNG' : 'JPEG'} ${size.description}: ${outputWidth}×${outputHeight} (${Math.round(fallbackStats.size / 1024)}KB)`);
+                
+                totalSuccess += 2;
+                
+            } catch (error) {
+                console.error(`  ✗ Error generating ${size.description} for ${map.imageFile}:`, error.message);
+                totalError++;
+            }
+        }
+    }
+    
+    console.log(`\n✅ Multi-resolution generation complete: ${totalSuccess} generated, ${totalSkipped} skipped, ${totalError} errors`);
 }
 
 // Generate gallery page
 function generateGallery(maps) {
     const template = loadTemplate('gallery.html');
     
-    // Generate map cards HTML - Updated for Figma design
+    // Generate map cards HTML
     const cardsHTML = maps.map(map => {
         // Format year display with "c." prefix if approximate
         const displayYear = map.yearApproximate 
@@ -124,7 +292,7 @@ function generateGallery(maps) {
         const filename = map.id.toUpperCase() + '.html';
         
         // Use thumbnail for gallery
-        const thumbnailFile = map.imageFile.replace('.jpg', '-thumb.jpg');
+        const thumbnailFile = map.imageFile.replace(/\.(jpg|jpeg|png)$/i, '-thumb.jpg');
         
         return `            <a href="${filename}" class="map-card">
                 <div class="map-card-image">
@@ -177,7 +345,7 @@ function generateMapDetails(maps) {
             .replace(/{{METERS_PER_PIXEL}}/g, map.metersPerPixel || 2.5)
             .replace(/{{ROTATION}}/g, map.rotation || 0)
             .replace(/{{DEFAULT_ZOOM}}/g, map.defaultZoom || 15)
-            .replace(/{{IMAGE_FILE}}/g, `images/${map.imageFile}`)
+            .replace(/{{IMAGE_FILE}}/g, map.imageFile)
             .replace(/{{METADATA_ROWS}}/g, generateMetadataRows(map));
         
         // Use uppercase ID for filename (e.g., S001M023.html)
@@ -280,28 +448,51 @@ function copyImages() {
 
 // Main build function
 async function build() {
-    console.log('Building Monterrey Viejo site with Figma design...\n');
+    console.log('🏗️  Building Monterrey Cartográfico with multi-resolution support...\n');
+    
+    if (FORCE_REGENERATE) {
+        console.log('🔄 Force regeneration flag detected - will rebuild ALL images\n');
+    }
+    
+    if (SKIP_IMAGES) {
+        console.log('⏭️  Skip images flag detected - will not process images\n');
+    }
+    
+    if (IMAGES_ONLY) {
+        console.log('🖼️  Images only flag detected - will only generate images\n');
+    }
     
     const maps = loadMapData();
-    console.log(`Loaded ${maps.length} maps\n`);
+    console.log(`📚 Loaded ${maps.length} maps\n`);
     
-    // Generate thumbnails first (800x800 @ 90% quality)
-    await generateThumbnails(maps);
+    // Generate images (thumbnails and multi-resolution)
+    if (!SKIP_IMAGES) {
+        await generateThumbnails(maps);
+        await generateMultiResolutionImages(maps);
+    }
     
-    console.log('\nGenerating pages...\n');
-    generateGallery(maps);
-    generateMapDetails(maps);
-    copyImages();
+    // Generate HTML pages
+    if (!IMAGES_ONLY) {
+        console.log('\n📄 Generating HTML pages...\n');
+        generateGallery(maps);
+        generateMapDetails(maps);
+        
+        console.log('\n📁 Copying original images...\n');
+        copyImages();
+    }
     
     console.log('\n✅ Build complete!');
-    console.log(`\nGenerated files in: ${PUBLIC_DIR}`);
-    console.log('\nNote: If thumbnails weren\'t generated (sharp not installed),');
-    console.log('they will be created automatically when deployed to GitHub Pages.');
-    console.log('To generate thumbnails locally: npm install sharp');
+    console.log(`\n📂 Generated files in: ${PUBLIC_DIR}`);
+    
+    if (!sharp && !SKIP_IMAGES) {
+        console.log('\n💡 Note: Sharp not installed locally.');
+        console.log('   Images will be generated automatically when deployed to GitHub Pages.');
+        console.log('   To generate images locally: npm install sharp');
+    }
 }
 
 // Run build
 build().catch(error => {
-    console.error('Build failed:', error);
+    console.error('❌ Build failed:', error);
     process.exit(1);
 });

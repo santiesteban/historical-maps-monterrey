@@ -3,7 +3,7 @@ name: Build and Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  workflow_dispatch:  # Allow manual triggers
 
 permissions:
   contents: read
@@ -17,22 +17,40 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30  # Increased timeout for first build
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Fetch last 2 commits to detect changes
+      
+      - name: Cache generated images
+        id: cache-images
+        uses: actions/cache@v3
+        with:
+          path: public/images/
+          # Cache key based on all source images
+          # If any image changes, cache is invalidated
+          key: images-v1-${{ hashFiles('images/maps/**') }}
+          restore-keys: |
+            images-v1-
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
+          cache: 'npm'
+      
       - name: Install dependencies
         run: npm install
       
-      - name: Build site
-        run: |
-          npm run build
+      - name: Build site with incremental image generation
+        run: npm run build
+        # Incremental build logic will:
+        # - Skip image generation if cached and up-to-date
+        # - Generate only new/changed images
+        # - Always regenerate HTML pages
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
