@@ -376,24 +376,26 @@
             let suffix = '';
             
             // Determine which resolution to load based on zoom
-            // Updated for higher resolutions: 25%, 50%, 75%, 100%
             if (zoom <= 12) {
                 suffix = '-small';   // 25% resolution
             } else if (zoom <= 14) {
                 suffix = '-medium';  // 50% resolution
             } else if (zoom <= 15) {
                 suffix = '-large';   // 75% resolution
+            } else {
+                // zoom >= 16: Use original file (no suffix, no WebP)
+                // Original is copied as-is, no optimized version generated
+                return 'images/' + baseImage;
             }
-            // else: use original (100% - no suffix)
             
-            // Extract base name and extension
+            // For resized versions: extract base name and extension
             const extMatch = baseImage.match(/\.(jpg|jpeg|png)$/i);
             if (!extMatch) return 'images/' + baseImage;
             
             const ext = extMatch[0];
             const baseName = baseImage.replace(/\.(jpg|jpeg|png)$/i, '');
             
-            // Use WebP if supported, otherwise use original format
+            // Use WebP if supported for resized versions, otherwise use original format
             if (hasWebPSupport) {
                 return `images/${baseName}${suffix}.webp`;
             } else {
