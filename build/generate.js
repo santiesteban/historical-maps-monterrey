@@ -126,7 +126,7 @@ async function generateThumbnails(maps) {
                     kernel: 'lanczos3'  // Sharpest resize algorithm
                 })
                 .jpeg({ 
-                    quality: 92,  // Reduced from 98 for better compression
+                    quality: 85,  // Standard web quality
                     mozjpeg: true
                 })
                 .toFile(thumbnailPath);
@@ -169,10 +169,10 @@ async function generateMultiResolutionImages(maps) {
     }
     
     const sizes = [
-        { suffix: '-small', scale: 0.25, description: '25%' },      // was 12.5%
-        { suffix: '-medium', scale: 0.50, description: '50%' },     // was 25%
-        { suffix: '-large', scale: 0.75, description: '75%' },      // was 50%
-        { suffix: '', scale: 1.0, description: '100% (optimized)' }
+        { suffix: '-small', scale: 0.25, description: '25%' },
+        { suffix: '-medium', scale: 0.50, description: '50%' },
+        { suffix: '-large', scale: 0.75, description: '75%' }
+        // Original (100%) is copied as-is by copyImages() - no reencoding needed
     ];
     
     let totalSuccess = 0;
@@ -224,7 +224,7 @@ async function generateMultiResolutionImages(maps) {
                     })
                     .sharpen()  // Add sharpening for better clarity
                     .webp({ 
-                        quality: 92,  // Reduced from 98 for better compression
+                        quality: 85,  // Reduced to ensure smaller than JPEG (was 92)
                         effort: 4  // Balanced speed/compression
                     })
                     .toFile(webpPath);
@@ -253,7 +253,7 @@ async function generateMultiResolutionImages(maps) {
                 } else {
                     await sharpInstance
                         .jpeg({ 
-                            quality: 92,  // Reduced from 98 - better compression, still excellent quality
+                            quality: 85,  // Reduced to prevent file bloat (was 92)
                             progressive: true,
                             mozjpeg: true,
                             chromaSubsampling: '4:4:4'  // Best quality chroma

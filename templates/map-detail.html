@@ -402,14 +402,8 @@
         }
 
         // Preload next resolution level
-        function preloadNextResolution(currentZoom) {
-            const nextZoom = Math.ceil(currentZoom) + 1;
-            if (nextZoom <= 16) {
-                const nextImage = getImagePathForZoom(mapData.image, nextZoom);
-                const img = new Image();
-                img.src = nextImage;
-            }
-        }
+        // Preloading removed - causes all images to download immediately
+        // Images now load on-demand when user zooms
 
         // Calculate geographic bounds for the historical map overlay with rotation
         function calculateBounds(mapData) {
@@ -537,9 +531,6 @@
                     if (newSrc !== currentImageSrc) {
                         this._image.src = newSrc;
                         currentImageSrc = newSrc;
-                        
-                        // Preload next resolution
-                        preloadNextResolution(newZoom);
                     }
                 },
                 
@@ -610,17 +601,13 @@
                     // Update the image URL
                     historicalLayer.setUrl(newSrc);
                     currentImageSrc = newSrc;
-                    
-                    // Preload next resolution
-                    preloadNextResolution(newZoom);
                 }
             });
             
             map.fitBounds(bounds);
         }
         
-        // Preload the next resolution on initial load
-        preloadNextResolution(map.getZoom());
+        // Removed preload on initial load - images load on-demand
 
         // Toggle checkbox
         const toggleHistorical = document.getElementById('toggle-historical');

@@ -32,9 +32,9 @@ jobs:
           path: public/images/
           # Cache key based on all source images
           # If any image changes, cache is invalidated
-          key: images-v2-${{ hashFiles('images/maps/**') }}
+          key: images-v3-${{ hashFiles('images/maps/**') }}
           restore-keys: |
-            images-v2-
+            images-v3-
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
