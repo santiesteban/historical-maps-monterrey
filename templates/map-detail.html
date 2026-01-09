@@ -103,6 +103,69 @@
         }
         
         
+        /* Custom Context Menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+            z-index: 10000;
+            display: none;
+            min-width: 280px;
+        }
+        
+        .context-menu.show {
+            display: block;
+        }
+        
+        .context-menu-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid #000;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .context-menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .context-menu-item:hover {
+            background: #000;
+            color: #fff;
+        }
+        
+        .context-menu-item small {
+            display: block;
+            font-size: 11px;
+            margin-top: 0.25rem;
+            opacity: 0.7;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-size: 14px;
+            z-index: 10001;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+
         /* Map Controls - Positioned at bottom */
         .map-controls {
             position: absolute;
@@ -342,6 +405,21 @@
         </div>
     </div>
     
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu">
+        <div class="context-menu-item" id="copy-coords">
+            Copiar Coordenadas
+            <small id="coords-preview"></small>
+        </div>
+        <div class="context-menu-item" id="copy-link">
+            Copiar Enlace a Esta Vista
+            <small>Incluye zoom y coordenadas</small>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+    
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
@@ -358,6 +436,37 @@
             centerPoint: [{{CENTER_LAT}}, {{CENTER_LNG}}],
             defaultZoom: {{DEFAULT_ZOOM}}
         };
+
+        // URL Parameters Helper
+        function getURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                lat: params.get('lat') ? parseFloat(params.get('lat')) : null,
+                lng: params.get('lng') ? parseFloat(params.get('lng')) : null,
+                zoom: params.get('zoom') ? parseInt(params.get('zoom')) : null
+            };
+        }
+
+        // Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Copy to Clipboard Helper
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                return false;
+            }
+        }
 
         // Detect WebP support
         function supportsWebP() {
@@ -468,10 +577,17 @@
             });
         }
 
+        // Get initial map view from URL params or defaults
+        const urlParams = getURLParams();
+        const initialCenter = (urlParams.lat && urlParams.lng) 
+            ? [urlParams.lat, urlParams.lng] 
+            : mapData.centerPoint;
+        const initialZoom = urlParams.zoom || mapData.defaultZoom;
+
         // Initialize the map
         const map = L.map('map', {
-            center: mapData.centerPoint,
-            zoom: mapData.defaultZoom,
+            center: initialCenter,
+            zoom: initialZoom,
             zoomControl: true
         });
 
@@ -579,9 +695,11 @@
             historicalLayer = new HistoricalOverlay();
             historicalLayer.addTo(map);
             
-            // Fit bounds using the rotated corners
-            const bounds = L.latLngBounds(corners);
-            map.fitBounds(bounds);
+            // Only fit bounds if no URL params (i.e., first visit)
+            if (!urlParams.lat && !urlParams.lng && !urlParams.zoom) {
+                const bounds = L.latLngBounds(corners);
+                map.fitBounds(bounds);
+            }
             
         } else {
             // For non-rotated maps, use standard imageOverlay with dynamic loading
@@ -606,7 +724,10 @@
                 }
             });
             
-            map.fitBounds(bounds);
+            // Only fit bounds if no URL params
+            if (!urlParams.lat && !urlParams.lng && !urlParams.zoom) {
+                map.fitBounds(bounds);
+            }
         }
         
         // Removed preload on initial load - images load on-demand
@@ -635,6 +756,65 @@
 
         // Add scale control
         L.control.scale({ imperial: false, metric: true }).addTo(map);
+
+        // Context Menu Implementation
+        const contextMenu = document.getElementById('context-menu');
+        const coordsPreview = document.getElementById('coords-preview');
+        let contextMenuLatLng = null;
+
+        // Show context menu on right click
+        map.on('contextmenu', function(e) {
+            e.originalEvent.preventDefault();
+            
+            contextMenuLatLng = e.latlng;
+            const coords = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+            coordsPreview.textContent = coords;
+            
+            // Position context menu
+            contextMenu.style.left = e.originalEvent.pageX + 'px';
+            contextMenu.style.top = e.originalEvent.pageY + 'px';
+            contextMenu.classList.add('show');
+        });
+
+        // Hide context menu on click anywhere else
+        document.addEventListener('click', function(e) {
+            if (!contextMenu.contains(e.target)) {
+                contextMenu.classList.remove('show');
+            }
+        });
+
+        // Copy coordinates
+        document.getElementById('copy-coords').addEventListener('click', async function() {
+            if (contextMenuLatLng) {
+                const coords = `${contextMenuLatLng.lat.toFixed(6)}, ${contextMenuLatLng.lng.toFixed(6)}`;
+                const success = await copyToClipboard(coords);
+                if (success) {
+                    showToast('Coordenadas copiadas al portapapeles');
+                }
+                contextMenu.classList.remove('show');
+            }
+        });
+
+        // Copy link with coordinates and zoom
+        document.getElementById('copy-link').addEventListener('click', async function() {
+            if (contextMenuLatLng) {
+                const zoom = map.getZoom();
+                const lat = contextMenuLatLng.lat.toFixed(6);
+                const lng = contextMenuLatLng.lng.toFixed(6);
+                
+                const url = `${window.location.origin}${window.location.pathname}?lat=${lat}&lng=${lng}&zoom=${zoom}`;
+                const success = await copyToClipboard(url);
+                if (success) {
+                    showToast('Enlace copiado al portapapeles');
+                }
+                contextMenu.classList.remove('show');
+            }
+        });
+
+        // Prevent default context menu on the map
+        document.getElementById('map').addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
     </script>
 </body>
 </html>

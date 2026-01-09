@@ -364,6 +364,13 @@ function generateMapDetails(maps) {
     });
 }
 
+// Helper function to format file size
+function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
 // Generate metadata table rows
 function generateMetadataRows(map) {
     const rows = [];
@@ -385,6 +392,19 @@ function generateMetadataRows(map) {
         rows.push(['Fuente', `<a href="${map.sourceUrl}" target="_blank">${map.source}</a>`]);
     } else if (map.source) {
         rows.push(['Fuente', map.source]);
+    }
+    
+    // Download link for original image
+    if (map.imageFile) {
+        const imagePath = path.join(IMAGES_DIR, map.imageFile);
+        let fileSizeText = '';
+        
+        if (fs.existsSync(imagePath)) {
+            const stats = fs.statSync(imagePath);
+            fileSizeText = ` (${formatFileSize(stats.size)})`;
+        }
+        
+        rows.push(['Descargar Imagen', `<a href="images/${map.imageFile}" download>Descargar mapa original${fileSizeText}</a>`]);
     }
     
     // Scale
