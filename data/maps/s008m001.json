@@ -1,0 +1,19 @@
+{
+  "id": "s008m001",
+  "title": "Plano de Monterrey de la CIA de 1958",
+  "state": "Nuevo León",
+  "municipality": "Monterrey",
+  "year": 1958,
+  "author": "Central Intelligence Agency, EEUU",
+  "yearApproximate": false,
+  "description": "Plano desclasificado de la CIA. Muestra densidad, usos, vías de comunicación y principales instalaciones.",
+  "source": "National Archives Catalog, EEUU",
+  "sourceUrl": "https://catalog.archives.gov/id/502849400",
+  "centerPoint": [25.687867, -100.300627],
+  "imageWidth": 6791,
+  "imageHeight": 5879,
+  "metersPerPixel": 4.49,
+  "rotation": 0,
+  "defaultZoom": 15,
+  "imageFile": "s008m001.jpg"
+}
