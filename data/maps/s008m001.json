@@ -9,11 +9,11 @@
   "description": "Plano desclasificado de la CIA. Muestra densidad, usos, vías de comunicación y principales instalaciones.",
   "source": "National Archives Catalog, EEUU",
   "sourceUrl": "https://catalog.archives.gov/id/502849400",
-  "centerPoint": [25.687867, -100.300627],
+  "centerPoint": [25.687861, -100.3008],
   "imageWidth": 6791,
   "imageHeight": 5879,
-  "metersPerPixel": 4.49,
-  "rotation": 0,
+  "metersPerPixel": 2.27,
+  "rotation": 1,
   "defaultZoom": 15,
   "imageFile": "s008m001.jpg"
 }
