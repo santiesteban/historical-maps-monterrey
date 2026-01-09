@@ -62,21 +62,22 @@ function needsRegeneration(sourceImage, targetFiles) {
         return false; // Can't regenerate if source missing
     }
     
-    const sourceStats = fs.statSync(sourceImage);
-    
-    // Check if all target files exist and are newer than source
+    // Check if all target files exist
+    let missingFiles = [];
     for (const targetFile of targetFiles) {
         if (!fs.existsSync(targetFile)) {
-            return true; // Missing file, need to generate
-        }
-        
-        const targetStats = fs.statSync(targetFile);
-        if (targetStats.mtime < sourceStats.mtime) {
-            return true; // Target older than source, need to regenerate
+            missingFiles.push(path.basename(targetFile));
         }
     }
     
-    return false; // All files exist and are up to date
+    if (missingFiles.length > 0) {
+        return true; // Missing files, need to generate
+    }
+    
+    // All files exist - in GitHub Actions with cache, we can skip timestamp check
+    // because cached files will always be older than checkout
+    // Instead, just trust that if all files exist, they're good
+    return false; // All files exist, skip regeneration
 }
 
 // Generate thumbnails for all maps
@@ -166,6 +167,15 @@ async function generateMultiResolutionImages(maps) {
     const publicImagesDir = path.join(PUBLIC_DIR, 'images');
     if (!fs.existsSync(publicImagesDir)) {
         fs.mkdirSync(publicImagesDir, { recursive: true });
+    }
+    
+    // Check cache status
+    const cacheExists = fs.existsSync(publicImagesDir) && 
+                       fs.readdirSync(publicImagesDir).length > 0;
+    if (cacheExists) {
+        console.log('📦 Found cached images directory with files\n');
+    } else {
+        console.log('📦 No cached images found - will generate all\n');
     }
     
     const sizes = [
