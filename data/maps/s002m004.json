@@ -8,13 +8,13 @@
   "source": "Memórica México",
   "sourceUrl": "https://memoricamexico.gob.mx/",
   "centerPoint": [
-    25.668854,
-    -100.312471
+    25.66899,
+    -100.312513
   ],
   "imageWidth": 5933,
   "imageHeight": 4000,
   "metersPerPixel": 0.31,
-  "rotation": 9,
+  "rotation": 8,
   "defaultZoom": 15,
   "imageFile": "s002m004.jpg"
 }
