@@ -9,13 +9,13 @@
   "source": "Tennessee Virtual Archive",
   "sourceUrl": "https://teva.contentdm.oclc.org/digital/collection/p15138coll23/id/10750/",
   "centerPoint": [
-    25.678942,
-    -100.32745
+    25.672212,
+    -100.320749
   ],
   "imageWidth": 9840,
   "imageHeight": 7860,
-  "metersPerPixel": 0.9,
-  "rotation": 5,
+  "metersPerPixel": 0.5,
+  "rotation": 9,
   "defaultZoom": 15,
   "imageFile": "s005m004.jpg"
 }
