@@ -37,6 +37,31 @@
             letter-spacing: -0.02em;
         }
         
+        /* Header */
+        header {
+            border-bottom: 2px solid #000;
+            background: white;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            text-decoration: none;
+            color: #000;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            line-height: 1.2;
+        }
+        
         /* Back Navigation */
         .back-nav {
             border-bottom: 2px solid #000;
@@ -77,7 +102,12 @@
             height: 100%;
         }
         
-        /* Map Controls */
+        /* Modern map tile filter - Rich Purple-Blue */
+        .modern-map-tiles {
+            filter: grayscale(100%) sepia(55%) hue-rotate(200deg) saturate(160%) brightness(95%);
+        }
+        
+        /* Map Controls - Positioned at bottom */
         .map-controls {
             position: absolute;
             bottom: 0;
@@ -90,6 +120,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
             gap: 1rem;
         }
         
@@ -106,7 +137,6 @@
             letter-spacing: 0.05em;
             cursor: pointer;
             user-select: none;
-            white-space: nowrap;
         }
         
         .opacity-value {
@@ -187,79 +217,6 @@
             font-weight: 400;
         }
         
-        /* Mobile Info Bar */
-        .mobile-info-bar {
-            display: none;
-        }
-        
-        /* Mobile Details Overlay */
-        .mobile-details-overlay {
-            display: none;
-        }
-        
-        /* Context Menu */
-        .context-menu {
-            position: fixed;
-            background: white;
-            border: 2px solid #000;
-            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
-            z-index: 10000;
-            display: none;
-            min-width: 280px;
-        }
-        
-        .context-menu.show {
-            display: block;
-        }
-        
-        .context-menu-item {
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            border-bottom: 1px solid #000;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .context-menu-item:last-child {
-            border-bottom: none;
-        }
-        
-        .context-menu-item:hover {
-            background: #000;
-            color: #fff;
-        }
-        
-        .context-menu-item small {
-            display: block;
-            font-size: 11px;
-            margin-top: 0.25rem;
-            opacity: 0.7;
-            text-transform: none;
-            letter-spacing: normal;
-        }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000;
-            color: #fff;
-            padding: 1rem 2rem;
-            border-radius: 4px;
-            font-size: 14px;
-            z-index: 10001;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        
-        .toast.show {
-            opacity: 1;
-        }
-        
         /* Mobile Styles */
         @media (max-width: 1024px) {
             .split-layout {
@@ -268,201 +225,75 @@
             
             .map-viewer {
                 width: 100%;
-                height: calc(100vh - 61px - 80px - 60px); /* viewport - header - info bar (approx) - controls height */
+                height: 50vh;
                 border-right: none;
+                border-bottom: 2px solid #000;
             }
             
             .content-panel {
-                display: none;
-            }
-            
-            /* Mobile Info Bar */
-            .mobile-info-bar {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                z-index: 1500;
-                background: white;
-                border-top: 2px solid #000;
-                padding: 1rem 1.5rem;
-                cursor: pointer;
-                align-items: center;
-                justify-content: space-between;
-            }
-            
-            .mobile-info-bar:active {
-                background: #f5f5f5;
-            }
-            
-            .info-bar-content {
-                flex: 1;
-                min-width: 0;
-            }
-            
-            .info-bar-title {
-                font-size: 18px;
-                font-weight: 900;
-                line-height: 1.3;
-                margin-bottom: 0.25rem;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-            }
-            
-            .info-bar-hint {
-                font-size: 11px;
-                color: #000;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
-            
-            .info-bar-arrow {
-                flex-shrink: 0;
-                width: 24px;
-                height: 24px;
-                margin-left: 1rem;
-            }
-            
-            .info-bar-arrow svg {
                 width: 100%;
-                height: 100%;
+                height: 50vh;
             }
             
-            /* Mobile Details Overlay */
-            .mobile-details-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: 2000;
-                background: white;
-                overflow-y: auto;
-            }
-            
-            .mobile-details-overlay.visible {
-                display: block;
-            }
-            
-            .mobile-details-header {
-                position: sticky;
-                top: 0;
-                background: white;
-                border-bottom: 2px solid #000;
-                padding: 1.25rem 1.5rem; /* Match site header padding exactly */
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                z-index: 10;
-            }
-            
-            .mobile-details-close {
-                background: transparent;
-                color: #000;
-                border: none;
-                padding: 0.5rem;
-                font-size: 28px;
-                font-weight: 300;
-                cursor: pointer;
-                font-family: inherit;
-                line-height: 1;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            .mobile-details-close:active {
-                background: transparent;
-                opacity: 0.5;
-            }
-            
-            .mobile-details-content {
-                padding: 2rem 1.5rem;
-            }
-            
-            .mobile-details-content .page-title h1 {
-                font-size: 28px;
-                margin-bottom: 1rem;
-            }
-            
-            .mobile-details-content .page-description {
-                font-size: 16px;
-                margin-bottom: 2rem;
-            }
-            
-            .mobile-details-content .details-section {
-                margin-left: 0;
-                margin-right: 0;
-            }
-            
-            .mobile-details-content .details-table {
-                width: 100%;
-                border-left: 2px solid #000;
-                border-right: 2px solid #000;
-            }
-            
-            .mobile-details-content .details-table td {
-                padding: 0.75rem 1rem;
+            .content-inner {
+                padding: 2rem;
             }
             
             .map-controls {
-                padding: 0.65rem 1rem;
-                gap: 0.75rem;
+                padding: 0.75rem;
             }
             
             .control-group {
+                flex-direction: column;
+                align-items: flex-start;
                 gap: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-title h1 {
+                font-size: 48px;
+            }
+            
+            .content-inner {
+                padding: 1.5rem;
+            }
+            
+            .details-section {
+                margin-left: -1.5rem;
+                margin-right: -1.5rem;
+            }
+            
+            .details-table {
+                width: calc(100% + 3rem);
+            }
+            
+            .details-table td {
+                padding: 0.75rem 1.5rem;
+            }
+            
+            .map-controls {
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+                font-size: 11px;
+            }
+            
+            .control-group {
+                gap: 0.25rem;
             }
             
             .control-group label {
                 font-size: 11px;
+                white-space: nowrap;
             }
             
             .control-group input[type="range"] {
-                width: 80px;
+                width: 100px;
             }
             
             .opacity-value {
                 font-size: 11px;
                 min-width: 35px;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .mobile-details-content .page-title h1 {
-                font-size: 24px;
-            }
-            
-            .info-bar-title {
-                font-size: 16px;
-            }
-            
-            .map-controls {
-                padding: 0.55rem 0.75rem;
-            }
-            
-            .control-group {
-                gap: 0.4rem;
-            }
-            
-            .control-group label {
-                font-size: 10px;
-            }
-            
-            .control-group input[type="range"] {
-                width: 70px;
-            }
-            
-            .opacity-value {
-                font-size: 10px;
-                min-width: 32px;
             }
         }
     </style>
@@ -494,7 +325,6 @@
             </div>
         </div>
         
-        <!-- Desktop Content Panel -->
         <div class="content-panel">
             <div class="content-inner">
                 <div class="page-title">
@@ -516,65 +346,11 @@
         </div>
     </div>
     
-    <!-- Mobile Info Bar -->
-    <div class="mobile-info-bar" id="mobile-info-bar">
-        <div class="info-bar-content">
-            <div class="info-bar-title">{{TITLE}}</div>
-            <div class="info-bar-hint">Mostrar detalles</div>
-        </div>
-        <div class="info-bar-arrow">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-            </svg>
-        </div>
-    </div>
-    
-    <!-- Mobile Details Overlay -->
-    <div class="mobile-details-overlay" id="mobile-details-overlay">
-        <div class="mobile-details-header">
-            <div></div>
-            <button class="mobile-details-close" id="mobile-details-close">
-                ✕
-            </button>
-        </div>
-        <div class="mobile-details-content">
-            <div class="page-title">
-                <h1>{{TITLE}}</h1>
-            </div>
-            
-            <div class="page-description">
-                {{DESCRIPTION}}
-            </div>
-            
-            <div class="details-section">
-                <table class="details-table">
-                    <tbody>
-{{METADATA_ROWS}}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Context Menu -->
-    <div id="context-menu" class="context-menu">
-        <div class="context-menu-item" id="copy-coords">
-            Copiar Coordenadas
-            <small id="coords-preview"></small>
-        </div>
-        <div class="context-menu-item" id="copy-link">
-            Copiar Enlace a Esta Vista
-            <small>Incluye zoom y coordenadas</small>
-        </div>
-    </div>
-    
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
-    
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <script>
+        // Map data
         const mapData = {
             title: "{{TITLE}}",
             year: {{YEAR_NUMERIC}},
@@ -587,57 +363,55 @@
             defaultZoom: {{DEFAULT_ZOOM}}
         };
 
-        function getURLParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                lat: params.get('lat') ? parseFloat(params.get('lat')) : null,
-                lng: params.get('lng') ? parseFloat(params.get('lng')) : null,
-                zoom: params.get('zoom') ? parseInt(params.get('zoom')) : null
-            };
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                return true;
-            } catch (err) {
-                return false;
-            }
-        }
-
+        // Detect WebP support
         function supportsWebP() {
             const elem = document.createElement('canvas');
-            return elem.getContext && elem.getContext('2d') && 
-                   elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+            if (elem.getContext && elem.getContext('2d')) {
+                return elem.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+            }
+            return false;
         }
 
         const hasWebPSupport = supportsWebP();
 
+        // Get appropriate image path based on zoom level
         function getImagePathForZoom(baseImage, currentZoom) {
             const zoom = Math.round(currentZoom);
             let suffix = '';
             
-            if (zoom <= 12) suffix = '-small';
-            else if (zoom <= 14) suffix = '-medium';
-            else if (zoom <= 15) suffix = '-large';
-            else return 'images/' + baseImage;
+            // Determine which resolution to load based on zoom
+            if (zoom <= 12) {
+                suffix = '-small';   // 25% resolution
+            } else if (zoom <= 14) {
+                suffix = '-medium';  // 50% resolution
+            } else if (zoom <= 15) {
+                suffix = '-large';   // 75% resolution
+            } else {
+                // zoom >= 16: Use original file (no suffix, no WebP)
+                // Original is copied as-is, no optimized version generated
+                return 'images/' + baseImage;
+            }
             
+            // For resized versions: extract base name and extension
             const extMatch = baseImage.match(/\.(jpg|jpeg|png)$/i);
             if (!extMatch) return 'images/' + baseImage;
             
             const ext = extMatch[0];
             const baseName = baseImage.replace(/\.(jpg|jpeg|png)$/i, '');
             
-            return hasWebPSupport ? `images/${baseName}${suffix}.webp` : `images/${baseName}${suffix}${ext}`;
+            // Use WebP if supported for resized versions, otherwise use original format
+            if (hasWebPSupport) {
+                return `images/${baseName}${suffix}.webp`;
+            } else {
+                return `images/${baseName}${suffix}${ext}`;
+            }
         }
 
+        // Preload next resolution level
+        // Preloading removed - causes all images to download immediately
+        // Images now load on-demand when user zooms
+
+        // Calculate geographic bounds for the historical map overlay with rotation
         function calculateBounds(mapData) {
             const { centerPoint, imageWidth, imageHeight, scale } = mapData;
             const [centerLat, centerLng] = centerPoint;
@@ -657,6 +431,7 @@
             ];
         }
 
+        // Calculate rotated corners for image overlay
         function calculateRotatedCorners(mapData) {
             const { centerPoint, imageWidth, imageHeight, scale, rotation } = mapData;
             const [centerLat, centerLng] = centerPoint;
@@ -670,21 +445,26 @@
             const halfWidth = widthMeters / 2;
             const halfHeight = heightMeters / 2;
             
+            // Convert rotation to radians (negate to rotate in correct direction)
             const rotRad = (-rotation * Math.PI) / 180;
             const cosRot = Math.cos(rotRad);
             const sinRot = Math.sin(rotRad);
             
+            // Calculate the four corners (top-left, top-right, bottom-left, bottom-right)
+            // relative to center, then rotate, then convert to lat/lng
             const corners = [
-                [-halfWidth, halfHeight],
-                [halfWidth, halfHeight],
-                [halfWidth, -halfHeight],
-                [-halfWidth, -halfHeight]
+                [-halfWidth, halfHeight],   // top-left
+                [halfWidth, halfHeight],    // top-right
+                [halfWidth, -halfHeight],   // bottom-right
+                [-halfWidth, -halfHeight]   // bottom-left
             ];
             
             return corners.map(([x, y]) => {
+                // Apply rotation
                 const rotX = x * cosRot - y * sinRot;
                 const rotY = x * sinRot + y * cosRot;
                 
+                // Convert to lat/lng
                 const lat = centerLat + (rotY / metersPerDegreeLat);
                 const lng = centerLng + (rotX / metersPerDegreeLng);
                 
@@ -692,42 +472,52 @@
             });
         }
 
-        const urlParams = getURLParams();
-        const initialCenter = (urlParams.lat && urlParams.lng) 
-            ? [urlParams.lat, urlParams.lng] 
-            : mapData.centerPoint;
-        const initialZoom = urlParams.zoom || mapData.defaultZoom;
-
+        // Initialize the map
         const map = L.map('map', {
-            center: initialCenter,
-            zoom: initialZoom,
+            center: mapData.centerPoint,
+            zoom: mapData.defaultZoom,
             zoomControl: true
         });
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // Add OpenStreetMap tile layer with Rich Purple-Blue filter
+        const modernLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
+            maxZoom: 19,
+            className: 'modern-map-tiles'
         }).addTo(map);
 
+        // Add historical map overlay
         let historicalLayer;
         let currentImageSrc = null;
         
         if (mapData.rotation !== 0) {
+            // For rotated maps, use distortableImageOverlay with corner coordinates
             const corners = calculateRotatedCorners(mapData);
             
+            // Create a custom image overlay element with dynamic loading
             const HistoricalOverlay = L.Layer.extend({
                 initialize: function() {
                     this._opacity = 1.0;
+                    this._currentZoom = map.getZoom();
                 },
                 
                 onAdd: function(map) {
                     this._image = L.DomUtil.create('img', 'leaflet-image-layer');
+                    
+                    // Set initial image source based on zoom
                     const initialSrc = getImagePathForZoom(mapData.image, map.getZoom());
                     this._image.src = initialSrc;
                     currentImageSrc = initialSrc;
+                    
                     this._image.style.position = 'absolute';
+                    
+                    // Add to overlay pane
                     map.getPanes().overlayPane.appendChild(this._image);
+                    
+                    // Update position
                     this._reset();
+                    
+                    // Listen to map events
                     map.on('zoom', this._reset, this);
                     map.on('move', this._reset, this);
                     map.on('zoomend', this._onZoomEnd, this);
@@ -741,7 +531,10 @@
                 },
                 
                 _onZoomEnd: function() {
-                    const newSrc = getImagePathForZoom(mapData.image, map.getZoom());
+                    const newZoom = map.getZoom();
+                    const newSrc = getImagePathForZoom(mapData.image, newZoom);
+                    
+                    // Only update if image source should change
                     if (newSrc !== currentImageSrc) {
                         this._image.src = newSrc;
                         currentImageSrc = newSrc;
@@ -749,25 +542,41 @@
                 },
                 
                 _reset: function() {
+                    const map = this._map;
                     const corners = calculateRotatedCorners(mapData);
-                    const topLeft = this._map.latLngToLayerPoint(corners[0]);
-                    const topRight = this._map.latLngToLayerPoint(corners[1]);
-                    const bottomRight = this._map.latLngToLayerPoint(corners[2]);
                     
-                    const width = Math.sqrt(Math.pow(topRight.x - topLeft.x, 2) + Math.pow(topRight.y - topLeft.y, 2));
-                    const height = Math.sqrt(Math.pow(bottomRight.x - topRight.x, 2) + Math.pow(bottomRight.y - topRight.y, 2));
+                    // Convert corners to pixel coordinates
+                    const topLeft = map.latLngToLayerPoint(corners[0]);
+                    const topRight = map.latLngToLayerPoint(corners[1]);
+                    const bottomRight = map.latLngToLayerPoint(corners[2]);
+                    
+                    // Calculate dimensions and rotation
+                    const width = Math.sqrt(
+                        Math.pow(topRight.x - topLeft.x, 2) + 
+                        Math.pow(topRight.y - topLeft.y, 2)
+                    );
+                    const height = Math.sqrt(
+                        Math.pow(bottomRight.x - topRight.x, 2) + 
+                        Math.pow(bottomRight.y - topRight.y, 2)
+                    );
+                    
+                    // Calculate angle
                     const angle = Math.atan2(topRight.y - topLeft.y, topRight.x - topLeft.x);
                     
+                    // Apply transform
                     this._image.style.width = width + 'px';
                     this._image.style.height = height + 'px';
                     this._image.style.transformOrigin = '0 0';
-                    this._image.style.transform = `translate(${topLeft.x}px, ${topLeft.y}px) rotate(${angle}rad)`;
+                    this._image.style.transform = 
+                        `translate(${topLeft.x}px, ${topLeft.y}px) rotate(${angle}rad)`;
                     this._image.style.opacity = this._opacity;
                 },
                 
                 setOpacity: function(opacity) {
                     this._opacity = opacity;
-                    if (this._image) this._image.style.opacity = opacity;
+                    if (this._image) {
+                        this._image.style.opacity = opacity;
+                    }
                     return this;
                 }
             });
@@ -775,11 +584,12 @@
             historicalLayer = new HistoricalOverlay();
             historicalLayer.addTo(map);
             
-            if (!urlParams.lat && !urlParams.lng && !urlParams.zoom) {
-                map.fitBounds(L.latLngBounds(corners));
-            }
+            // Fit bounds using the rotated corners
+            const bounds = L.latLngBounds(corners);
+            map.fitBounds(bounds);
             
         } else {
+            // For non-rotated maps, use standard imageOverlay with dynamic loading
             const bounds = calculateBounds(mapData);
             const initialSrc = getImagePathForZoom(mapData.image, map.getZoom());
             currentImageSrc = initialSrc;
@@ -789,88 +599,47 @@
                 interactive: false
             }).addTo(map);
             
+            // Update image on zoom
             map.on('zoomend', function() {
-                const newSrc = getImagePathForZoom(mapData.image, map.getZoom());
+                const newZoom = map.getZoom();
+                const newSrc = getImagePathForZoom(mapData.image, newZoom);
+                
                 if (newSrc !== currentImageSrc) {
+                    // Update the image URL
                     historicalLayer.setUrl(newSrc);
                     currentImageSrc = newSrc;
                 }
             });
             
-            if (!urlParams.lat && !urlParams.lng && !urlParams.zoom) {
-                map.fitBounds(bounds);
-            }
+            map.fitBounds(bounds);
         }
+        
+        // Removed preload on initial load - images load on-demand
 
-        document.getElementById('toggle-historical').addEventListener('change', function(e) {
+        // Toggle checkbox
+        const toggleHistorical = document.getElementById('toggle-historical');
+        const opacitySlider = document.getElementById('opacity-slider');
+        const opacityValue = document.getElementById('opacity-value');
+
+        toggleHistorical.addEventListener('change', function(e) {
             if (e.target.checked) {
                 map.addLayer(historicalLayer);
-                document.getElementById('opacity-slider').disabled = false;
+                opacitySlider.disabled = false;
             } else {
                 map.removeLayer(historicalLayer);
-                document.getElementById('opacity-slider').disabled = true;
+                opacitySlider.disabled = true;
             }
         });
 
-        document.getElementById('opacity-slider').addEventListener('input', function(e) {
-            historicalLayer.setOpacity(e.target.value / 100);
-            document.getElementById('opacity-value').textContent = e.target.value + '%';
+        // Opacity slider
+        opacitySlider.addEventListener('input', function(e) {
+            const opacity = e.target.value / 100;
+            historicalLayer.setOpacity(opacity);
+            opacityValue.textContent = e.target.value + '%';
         });
 
+        // Add scale control
         L.control.scale({ imperial: false, metric: true }).addTo(map);
-
-        // Mobile overlay
-        const infoBar = document.getElementById('mobile-info-bar');
-        const detailsOverlay = document.getElementById('mobile-details-overlay');
-        const closeButton = document.getElementById('mobile-details-close');
-        
-        if (infoBar) {
-            infoBar.addEventListener('click', () => {
-                detailsOverlay.classList.add('visible');
-                document.body.style.overflow = 'hidden';
-            });
-        }
-        
-        if (closeButton) {
-            closeButton.addEventListener('click', () => {
-                detailsOverlay.classList.remove('visible');
-                document.body.style.overflow = '';
-            });
-        }
-
-        // Context menu
-        const contextMenu = document.getElementById('context-menu');
-        const coordsPreview = document.getElementById('coords-preview');
-        let contextMenuLatLng = null;
-
-        map.on('contextmenu', function(e) {
-            e.originalEvent.preventDefault();
-            contextMenuLatLng = e.latlng;
-            coordsPreview.textContent = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
-            contextMenu.style.left = e.originalEvent.pageX + 'px';
-            contextMenu.style.top = e.originalEvent.pageY + 'px';
-            contextMenu.classList.add('show');
-        });
-
-        document.addEventListener('click', e => {
-            if (!contextMenu.contains(e.target)) contextMenu.classList.remove('show');
-        });
-
-        document.getElementById('copy-coords').addEventListener('click', async () => {
-            if (contextMenuLatLng) {
-                const coords = `${contextMenuLatLng.lat.toFixed(6)}, ${contextMenuLatLng.lng.toFixed(6)}`;
-                if (await copyToClipboard(coords)) showToast('Coordenadas copiadas');
-                contextMenu.classList.remove('show');
-            }
-        });
-
-        document.getElementById('copy-link').addEventListener('click', async () => {
-            if (contextMenuLatLng) {
-                const url = `${window.location.origin}${window.location.pathname}?lat=${contextMenuLatLng.lat.toFixed(6)}&lng=${contextMenuLatLng.lng.toFixed(6)}&zoom=${map.getZoom()}`;
-                if (await copyToClipboard(url)) showToast('Enlace copiado');
-                contextMenu.classList.remove('show');
-            }
-        });
     </script>
 </body>
 </html>
