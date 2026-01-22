@@ -37,31 +37,6 @@
             letter-spacing: -0.02em;
         }
         
-        /* Header */
-        header {
-            border-bottom: 2px solid #000;
-            background: white;
-        }
-        
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .logo {
-            text-decoration: none;
-            color: #000;
-        }
-        
-        .logo h1 {
-            font-size: 28px;
-            line-height: 1.2;
-        }
-        
         /* Back Navigation */
         .back-nav {
             border-bottom: 2px solid #000;
@@ -102,9 +77,9 @@
             height: 100%;
         }
         
-        /* Modern map tile filter - Rich Purple-Blue */
+        /* Modern map tile filter - Grayscale */
         .modern-map-tiles {
-            filter: grayscale(100%) sepia(55%) hue-rotate(200deg) saturate(160%) brightness(95%);
+            filter: grayscale(100%) contrast(120%) brightness(90%);
         }
         
         /* Map Controls - Positioned at bottom */
@@ -118,9 +93,8 @@
             border-top: 2px solid #000;
             padding: 1rem;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            flex-wrap: wrap;
             gap: 1rem;
         }
         
@@ -137,6 +111,7 @@
             letter-spacing: 0.05em;
             cursor: pointer;
             user-select: none;
+            white-space: nowrap;
         }
         
         .opacity-value {
@@ -217,6 +192,16 @@
             font-weight: 400;
         }
         
+        /* Mobile Info Bar */
+        .mobile-info-bar {
+            display: none;
+        }
+        
+        /* Mobile Details Overlay */
+        .mobile-details-overlay {
+            display: none;
+        }
+        
         /* Mobile Styles */
         @media (max-width: 1024px) {
             .split-layout {
@@ -225,76 +210,265 @@
             
             .map-viewer {
                 width: 100%;
-                height: 50vh;
+                height: calc(100vh - 61px - 80px - 60px); /* viewport - header - info bar (approx) - controls height */
                 border-right: none;
-                border-bottom: 2px solid #000;
             }
             
             .content-panel {
-                width: 100%;
-                height: 50vh;
+                display: none;
             }
             
-            .content-inner {
-                padding: 2rem;
+            /* Mobile Info Bar */
+            .mobile-info-bar {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 1500;
+                background: white;
+                border-top: 2px solid #000;
+                padding: 1rem 1.5rem;
+                cursor: pointer;
+                align-items: center;
+                justify-content: space-between;
             }
             
-            .map-controls {
-                padding: 0.75rem;
+            .mobile-info-bar:active {
+                background: #f5f5f5;
             }
             
-            .control-group {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .page-title h1 {
-                font-size: 48px;
+            .info-bar-content {
+                flex: 1;
+                min-width: 0;
             }
             
-            .content-inner {
-                padding: 1.5rem;
+            .info-bar-title {
+                font-size: 18px;
+                font-weight: 900;
+                line-height: 1.3;
+                margin-bottom: 0.25rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
             }
             
-            .details-section {
-                margin-left: -1.5rem;
-                margin-right: -1.5rem;
-            }
-            
-            .details-table {
-                width: calc(100% + 3rem);
-            }
-            
-            .details-table td {
-                padding: 0.75rem 1.5rem;
-            }
-            
-            .map-controls {
-                padding: 0.75rem 1rem;
-                gap: 0.5rem;
+            .info-bar-hint {
                 font-size: 11px;
+                color: #000;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            
+            .info-bar-arrow {
+                flex-shrink: 0;
+                width: 24px;
+                height: 24px;
+                margin-left: 1rem;
+            }
+            
+            .info-bar-arrow svg {
+                width: 100%;
+                height: 100%;
+            }
+            
+            /* Mobile Details Overlay */
+            .mobile-details-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 2000;
+                background: white;
+                overflow-y: auto;
+            }
+            
+            .mobile-details-overlay.visible {
+                display: block;
+            }
+            
+            .mobile-details-header {
+                position: sticky;
+                top: 0;
+                background: white;
+                border-bottom: 2px solid #000;
+                padding: 1.25rem 1.5rem; /* Match site header padding exactly */
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                z-index: 10;
+            }
+            
+            .mobile-details-close {
+                background: transparent;
+                color: #000;
+                border: none;
+                padding: 0.5rem;
+                font-size: 28px;
+                font-weight: 300;
+                cursor: pointer;
+                font-family: inherit;
+                line-height: 1;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .mobile-details-close:active {
+                background: transparent;
+                opacity: 0.5;
+            }
+            
+            .mobile-details-content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .mobile-details-content .page-title h1 {
+                font-size: 28px;
+                margin-bottom: 1rem;
+            }
+            
+            .mobile-details-content .page-description {
+                font-size: 16px;
+                margin-bottom: 2rem;
+            }
+            
+            .mobile-details-content .details-section {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            .mobile-details-content .details-table {
+                width: 100%;
+                border-left: 2px solid #000;
+                border-right: 2px solid #000;
+            }
+            
+            .mobile-details-content .details-table td {
+                padding: 0.75rem 1rem;
+            }
+            
+            .map-controls {
+                padding: 0.65rem 1rem;
+                gap: 0.75rem;
             }
             
             .control-group {
-                gap: 0.25rem;
+                gap: 0.5rem;
             }
             
             .control-group label {
                 font-size: 11px;
-                white-space: nowrap;
             }
             
             .control-group input[type="range"] {
-                width: 100px;
+                width: 80px;
             }
             
             .opacity-value {
                 font-size: 11px;
                 min-width: 35px;
             }
+        }
+        
+        @media (max-width: 576px) {
+            .mobile-details-content .page-title h1 {
+                font-size: 24px;
+            }
+            
+            .info-bar-title {
+                font-size: 16px;
+            }
+            
+            .map-controls {
+                padding: 0.55rem 0.75rem;
+            }
+            
+            .control-group {
+                gap: 0.4rem;
+            }
+            
+            .control-group label {
+                font-size: 10px;
+            }
+            
+            .control-group input[type="range"] {
+                width: 70px;
+            }
+            
+            .opacity-value {
+                font-size: 10px;
+                min-width: 32px;
+            }
+        }
+        
+        /* Context Menu */
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+            z-index: 10000;
+            display: none;
+            min-width: 280px;
+        }
+        
+        .context-menu.show {
+            display: block;
+        }
+        
+        .context-menu-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid #000;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .context-menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .context-menu-item:hover {
+            background: #000;
+            color: #fff;
+        }
+        
+        .context-menu-item small {
+            display: block;
+            font-size: 11px;
+            margin-top: 0.25rem;
+            opacity: 0.7;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-size: 14px;
+            z-index: 10001;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .toast.show {
+            opacity: 1;
         }
     </style>
 </head>
@@ -313,13 +487,8 @@
             
             <div class="map-controls">
                 <div class="control-group">
-                    <input type="checkbox" id="toggle-historical" checked>
-                    <label for="toggle-historical">Mapa Histórico</label>
-                </div>
-                
-                <div class="control-group">
                     <label for="opacity-slider">Opacidad:</label>
-                    <input type="range" id="opacity-slider" min="0" max="100" value="100">
+                    <input type="range" id="opacity-slider" min="0" max="100" value="100" style="width: 200px;">
                     <span id="opacity-value" class="opacity-value">100%</span>
                 </div>
             </div>
@@ -346,6 +515,61 @@
         </div>
     </div>
     
+    <!-- Mobile Info Bar -->
+    <div class="mobile-info-bar" id="mobile-info-bar">
+        <div class="info-bar-content">
+            <div class="info-bar-title">{{TITLE}}</div>
+            <div class="info-bar-hint">Mostrar detalles</div>
+        </div>
+        <div class="info-bar-arrow">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+            </svg>
+        </div>
+    </div>
+    
+    <!-- Mobile Details Overlay -->
+    <div class="mobile-details-overlay" id="mobile-details-overlay">
+        <div class="mobile-details-header">
+            <div></div>
+            <button class="mobile-details-close" id="mobile-details-close">
+                ✕
+            </button>
+        </div>
+        <div class="mobile-details-content">
+            <div class="page-title">
+                <h1>{{TITLE}}</h1>
+            </div>
+            
+            <div class="page-description">
+                {{DESCRIPTION}}
+            </div>
+            
+            <div class="details-section">
+                <table class="details-table">
+                    <tbody>
+{{METADATA_ROWS}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu">
+        <div class="context-menu-item" id="copy-coords">
+            Copiar Coordenadas
+            <small id="coords-preview"></small>
+        </div>
+        <div class="context-menu-item" id="copy-link">
+            Copiar Enlace a Esta Vista
+            <small>Incluye zoom y coordenadas</small>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+    
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
@@ -362,6 +586,31 @@
             centerPoint: [{{CENTER_LAT}}, {{CENTER_LNG}}],
             defaultZoom: {{DEFAULT_ZOOM}}
         };
+
+        function getURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                lat: params.get('lat') ? parseFloat(params.get('lat')) : null,
+                lng: params.get('lng') ? parseFloat(params.get('lng')) : null,
+                zoom: params.get('zoom') ? parseInt(params.get('zoom')) : null
+            };
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                return false;
+            }
+        }
 
         // Detect WebP support
         function supportsWebP() {
@@ -472,14 +721,20 @@
             });
         }
 
+        const urlParams = getURLParams();
+        const initialCenter = (urlParams.lat && urlParams.lng) 
+            ? [urlParams.lat, urlParams.lng] 
+            : mapData.centerPoint;
+        const initialZoom = urlParams.zoom || mapData.defaultZoom;
+
         // Initialize the map
         const map = L.map('map', {
-            center: mapData.centerPoint,
-            zoom: mapData.defaultZoom,
+            center: initialCenter,
+            zoom: initialZoom,
             zoomControl: true
         });
 
-        // Add OpenStreetMap tile layer with Rich Purple-Blue filter
+        // Add OpenStreetMap tile layer with Grayscale filter
         const modernLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
             maxZoom: 19,
@@ -584,9 +839,11 @@
             historicalLayer = new HistoricalOverlay();
             historicalLayer.addTo(map);
             
-            // Fit bounds using the rotated corners
-            const bounds = L.latLngBounds(corners);
-            map.fitBounds(bounds);
+            if (!urlParams.lat && !urlParams.lng && !urlParams.zoom) {
+                // Fit bounds using the rotated corners
+                const bounds = L.latLngBounds(corners);
+                map.fitBounds(bounds);
+            }
             
         } else {
             // For non-rotated maps, use standard imageOverlay with dynamic loading
@@ -611,32 +868,75 @@
                 }
             });
             
-            map.fitBounds(bounds);
+            if (!urlParams.lat && !urlParams.lng && !urlParams.zoom) {
+                map.fitBounds(bounds);
+            }
         }
         
         // Removed preload on initial load - images load on-demand
 
-        // Toggle checkbox
-        const toggleHistorical = document.getElementById('toggle-historical');
+        // Opacity slider controls
         const opacitySlider = document.getElementById('opacity-slider');
         const opacityValue = document.getElementById('opacity-value');
 
-        toggleHistorical.addEventListener('change', function(e) {
-            if (e.target.checked) {
-                map.addLayer(historicalLayer);
-                opacitySlider.disabled = false;
-            } else {
-                map.removeLayer(historicalLayer);
-                opacitySlider.disabled = true;
-            }
-        });
-
-        // Opacity slider
         opacitySlider.addEventListener('input', function(e) {
             const opacity = e.target.value / 100;
             historicalLayer.setOpacity(opacity);
             opacityValue.textContent = e.target.value + '%';
         });
+
+        // Context menu
+        const contextMenu = document.getElementById('context-menu');
+        const coordsPreview = document.getElementById('coords-preview');
+        let contextMenuLatLng = null;
+
+        map.on('contextmenu', function(e) {
+            e.originalEvent.preventDefault();
+            contextMenuLatLng = e.latlng;
+            coordsPreview.textContent = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+            contextMenu.style.left = e.originalEvent.pageX + 'px';
+            contextMenu.style.top = e.originalEvent.pageY + 'px';
+            contextMenu.classList.add('show');
+        });
+
+        document.addEventListener('click', e => {
+            if (!contextMenu.contains(e.target)) contextMenu.classList.remove('show');
+        });
+
+        document.getElementById('copy-coords').addEventListener('click', async () => {
+            if (contextMenuLatLng) {
+                const coords = `${contextMenuLatLng.lat.toFixed(6)}, ${contextMenuLatLng.lng.toFixed(6)}`;
+                if (await copyToClipboard(coords)) showToast('Coordenadas copiadas');
+                contextMenu.classList.remove('show');
+            }
+        });
+
+        document.getElementById('copy-link').addEventListener('click', async () => {
+            if (contextMenuLatLng) {
+                const url = `${window.location.origin}${window.location.pathname}?lat=${contextMenuLatLng.lat.toFixed(6)}&lng=${contextMenuLatLng.lng.toFixed(6)}&zoom=${map.getZoom()}`;
+                if (await copyToClipboard(url)) showToast('Enlace copiado');
+                contextMenu.classList.remove('show');
+            }
+        });
+
+        // Mobile overlay
+        const infoBar = document.getElementById('mobile-info-bar');
+        const detailsOverlay = document.getElementById('mobile-details-overlay');
+        const closeButton = document.getElementById('mobile-details-close');
+        
+        if (infoBar) {
+            infoBar.addEventListener('click', () => {
+                detailsOverlay.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+        
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                detailsOverlay.classList.remove('visible');
+                document.body.style.overflow = '';
+            });
+        }
 
         // Add scale control
         L.control.scale({ imperial: false, metric: true }).addTo(map);
